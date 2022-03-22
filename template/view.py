@@ -3,7 +3,7 @@
 # You can find a fuller explanation for this file in the README file
 #-----------------------------------------------------------------------------
 
-import string
+import string, os
 
 class View():
     '''
@@ -16,7 +16,7 @@ class View():
         header keyword argument when calling the function from model
     '''
     def __init__(self, 
-        template_path="templates/",  # Path to template files
+        template_path=os.path.dirname(__file__)+"/templates/",  # Path to template files
         template_extension=".html",  # Extension of templates, self can be overridden
         **kwargs): # Used to pass any global format arguments
         self.template_path = template_path
