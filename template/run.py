@@ -26,6 +26,7 @@ from bottle import run
 import model
 import view
 import controller
+# from no_sql_db import database
 
 #-----------------------------------------------------------------------------
 
@@ -51,10 +52,18 @@ def run_server():
 # Comment out the current manage_db function, and 
 # uncomment the following one to load an SQLite3 database
 
+"""
 def manage_db():
     '''
         Blank function for database support, use as needed
     '''
+    # no_sql_db.database
+    
+    # Create initial table entry for admin ('users', "id", "username", "password")
+    database.create_table_entry('users', ["0", "admin", "password"])
+    print(database.search_table('users', "id", "0"))
+    
+    
     pass
 
 """
@@ -66,10 +75,12 @@ def manage_db():
         Starts up and re-initialises an SQL databse for the server
     '''
     database_args = ":memory:" # Currently runs in RAM, might want to change this to a file if you use it
-    sql_db = sql.SQLDatabase(database_args=database_args)
+    # sql_db = sql.SQLDatabase(database_args=database_args)
+    sql_db = sql.SQLDatabase()
+    sql_db.database_setup()
 
     return
-"""
+
 
 #-----------------------------------------------------------------------------
 
@@ -95,7 +106,7 @@ def run_commands(args):
 
     # Default command
     if len(commands) == 0:
-        commands = [default_command]
+        commands = ['manage_db', default_command]
 
     for command in commands:
         if command in command_list:
@@ -103,6 +114,9 @@ def run_commands(args):
         else:
             print("Command '{command}' not found".format(command=command))
 
-#-----------------------------------------------------------------------------
+    
 
+    
+
+#-----------------------------------------------------------------------------
 run_commands(sys.argv)

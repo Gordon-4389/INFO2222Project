@@ -71,6 +71,7 @@ class DB():
             Calls the search table method on an appropriate table
         '''
         return self.tables[table_name].search_table(target_field_name, target_value)
+        
 
     def create_table_entry(self, table_name, data):
         '''
@@ -82,3 +83,7 @@ class DB():
 # Our global database
 # Invoke this as needed
 database = DB()
+
+# database.create_table_entry('users', ["0", "admin", "password"])
+# print(database.tables.get('users').entries)
+# print(database.search_table('users', "id", "0"))

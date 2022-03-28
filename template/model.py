@@ -7,6 +7,7 @@
 '''
 import view
 import random
+from no_sql_db import database
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -49,6 +50,17 @@ def login_check(username, password):
 
     # By default assume good creds
     login = True
+
+    # if database.search_table("users", "username", username) == None: # Incorrect Username
+    #     err_str = "Incorrect Username!!!"
+    #     login = False
+
+    # # Hash magic on password here & add salt
+    # if database.search_table("users", "password", password) == None: # Incorrect pwd
+    #     err_str = "Incorrect Password"
+    #     login = False
+
+    
     
     if username != "admin": # Wrong Username
         err_str = "Incorrect Username"
@@ -62,6 +74,8 @@ def login_check(username, password):
         return page_view("valid", name=username)
     else:
         return page_view("invalid", reason=err_str)
+
+    
 
 #-----------------------------------------------------------------------------
 # About
