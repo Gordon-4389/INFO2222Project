@@ -80,10 +80,11 @@ def manage_db():
         manage_db
         Starts up and re-initialises an SQL databse for the server
     '''
-    database_args = ":memory:" # Currently runs in RAM, might want to change this to a file if you use it
-    # sql_db = sql.SQLDatabase(database_args=database_args)
-    sql_db = sql.SQLDatabase()
+    database_args = "user1.db" # Currently runs in RAM, might want to change this to a file if you use it
+    sql_db = sql.SQLDatabase(database_args)
+    # sql_db = sql.SQLDatabase()
     sql_db.database_setup()
+    sql_db.commit()
 
     return
 

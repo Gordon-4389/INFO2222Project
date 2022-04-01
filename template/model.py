@@ -7,8 +7,10 @@
 '''
 import view
 import random
-from no_sql_db import database
+# from no_sql_db import database
 from sql import SQLDatabase
+import hashlib
+# from run import manage_db
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -32,7 +34,16 @@ def register_form():
     return page_view("register")
 
 def register_check(username, password):
-    db.add_user(username, password)
+    sql_db = SQLDatabase('user1.db')
+    # generate the salt
+    salt = str(random.randint(0, 1023)) + username
+    # combine the salt with password
+    salt_w_password = salt + password
+    # hash pwd
+    hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
+    sql_db.add_user(username, hashed_password, salt)
+    sql_db.commit()
+    print(hashed_password)
     # print(tre)
     return page_view("valid", name=username)
     # do the database insert here
@@ -73,16 +84,32 @@ def login_check(username, password):
     # if database.search_table("users", "password", password) == None: # Incorrect pwd
     #     err_str = "Incorrect Password"
     #     login = False
+    sql_db = SQLDatabase('user1.db')
+
+    # salt = str(random.randint(0, 1023)) + username
+    # getting the salt of this username
+    salt = sql_db.get_salt(username)
+    # print(salt)
+    # combine the salt with password
+    salt_w_password = salt + password
+    # hash pwd
+    hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
+    print(hashed_password)
 
     
-    
-    if username != "admin": # Wrong Username
-        err_str = "Incorrect Username"
+
+    if sql_db.check_credentials(username, hashed_password) == False:
+        err_str = "Incorrect password"
         login = False
     
-    if password != "password": # Wrong password
-        err_str = "Incorrect Password"
-        login = False
+    
+    # if username != "admin": # Wrong Username
+    #     err_str = "Incorrect Username"
+    #     login = False
+    
+    # if password != "password": # Wrong password
+    #     err_str = "Incorrect Password"
+    #     login = False
         
     if login: 
         return page_view("valid", name=username)
