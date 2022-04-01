@@ -54,7 +54,7 @@ class SQLDatabase():
         self.commit()
 
         # Add our admin user
-        self.add_user('admin', admin_pasword, admin=1)
+        self.add_user('admin', admin_password, admin=1)
 
     #-----------------------------------------------------------------------------
     # User handling
@@ -67,7 +67,7 @@ class SQLDatabase():
                 VALUES({id}, '{username}', '{password}', {admin})
             """
 
-        sql_cmd = sql_cmd.format(username=username, password=password, admin=admin)
+        sql_cmd = sql_cmd.format(id=0, username=username, password=password, admin=admin)
 
         self.execute(sql_cmd)
         self.commit()

@@ -16,6 +16,7 @@
 import os
 import sys
 from bottle import run
+from bottle import Bottle
 
 #-----------------------------------------------------------------------------
 # You may eventually wish to put these in their own directories and then load 
@@ -26,6 +27,7 @@ from bottle import run
 import model
 import view
 import controller
+# import requests
 # from no_sql_db import database
 
 #-----------------------------------------------------------------------------
@@ -39,13 +41,17 @@ port = 8081
 
 # Turn this off for production
 debug = True
+# def verify_cert():
+#     requests.get('https://somesite.com', cert='/path/server.crt', verify=True)
 
 def run_server():    
     '''
         run_server
         Runs a bottle server
     '''
-    run(host=host, port=port, debug=debug)
+    # run(host=host, port=port, debug=debug)
+    run(host=host, port=port, debug=debug, server='gunicorn', keyfile='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.key', 
+     certfile='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.crt', config='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.ext')
 
 #-----------------------------------------------------------------------------
 # Optional SQL support

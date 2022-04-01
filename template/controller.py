@@ -107,7 +107,18 @@ def post_login():
 
 
 #-----------------------------------------------------------------------------
+@get('/register')
+def get_register_controller():
+    return model.register_form()
 
+# Attempt the register
+@post('/register')
+def post_register():
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    email = request.forms.get('email')
+    return model.register_check(username, password)
+# ------------------------------------------------------------------------------
 @get('/about')
 def get_about():
     '''

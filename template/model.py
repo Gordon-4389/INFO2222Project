@@ -8,6 +8,7 @@
 import view
 import random
 from no_sql_db import database
+from sql import SQLDatabase
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -23,6 +24,18 @@ def index():
     '''
     return page_view("index")
 
+#-----------------------------------------------------------------------------
+# Register
+#-----------------------------------------------------------------------------
+
+def register_form():
+    return page_view("register")
+
+def register_check(username, password):
+    db.add_user(username, password)
+    # print(tre)
+    return page_view("valid", name=username)
+    # do the database insert here
 #-----------------------------------------------------------------------------
 # Login
 #-----------------------------------------------------------------------------
