@@ -54,7 +54,7 @@ class SQLDatabase():
         self.commit()
 
         # Add our admin user
-        self.add_user('admin', admin_pasword, admin=1)
+        self.add_user('admin', admin_password, admin=1)
 
     #-----------------------------------------------------------------------------
     # User handling
