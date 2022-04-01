@@ -13,7 +13,7 @@ class SQLDatabase():
     '''
 
     # Get the database running
-    def __init__(self, database_arg=":memory:"):
+    def __init__(self, database_arg="user1.db"):
         self.conn = sqlite3.connect(database_arg)
         self.cur = self.conn.cursor()
 
@@ -48,45 +48,77 @@ class SQLDatabase():
             Id INT,
             username TEXT,
             password TEXT,
-            admin INTEGER DEFAULT 0
+            admin INTEGER DEFAULT 0,
+            salt TEXT
         )""")
 
         self.commit()
 
         # Add our admin user
+<<<<<<< HEAD
         self.add_user('admin', admin_password, admin=1)
+=======
+        self.add_user('admin', admin_password, '0000', admin=1)
+>>>>>>> 81068c5d7320ef37bb9636a903e5adfa19dde699
 
     #-----------------------------------------------------------------------------
     # User handling
     #-----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, admin=0):
+    def add_user(self, username, password, salt, admin=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin})
+                VALUES({id}, '{username}', '{password}', {admin}, '{salt}')
             """
 
-        sql_cmd = sql_cmd.format(username=username, password=password, admin=admin)
+        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin)
 
         self.execute(sql_cmd)
         self.commit()
         return True
 
     #-----------------------------------------------------------------------------
+    def get_salt(self, username):
+        sql_query = """
+                SELECT salt
+                FROM Users
+                WHERE username = '{username}'
+            """
+        
+        sql_query = sql_query.format(username=username)
+
+        self.cur.execute(sql_query)
+        
+        s = self.cur.fetchone()[0]
+        # print(s[0])
+        # return curs.fetchone()
+        return s
+
 
     # Check login credentials
     def check_credentials(self, username, password):
         sql_query = """
-                SELECT 1 
+                SELECT username, password
                 FROM Users
                 WHERE username = '{username}' AND password = '{password}'
             """
 
         sql_query = sql_query.format(username=username, password=password)
 
-        # If our query returns
-        if cur.fetchone():
+        
+        self.cur.execute(sql_query)
+        to_compare = self.cur.fetchone()
+
+        if to_compare == None:
+            return False
+        elif to_compare[0] == username and to_compare[1] == password:
             return True
         else:
             return False
+        # # If our query returns
+        # print(self.cur.fetchone())
+        # if self.cur.fetchone():
+        #     return True
+        # else:
+        #     return False

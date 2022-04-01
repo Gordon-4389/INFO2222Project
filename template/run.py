@@ -16,6 +16,7 @@
 import os
 import sys
 from bottle import run
+from bottle import Bottle
 
 #-----------------------------------------------------------------------------
 # You may eventually wish to put these in their own directories and then load 
@@ -26,7 +27,11 @@ from bottle import run
 import model
 import view
 import controller
+<<<<<<< HEAD
 import os
+=======
+# import requests
+>>>>>>> 81068c5d7320ef37bb9636a903e5adfa19dde699
 # from no_sql_db import database
 
 #-----------------------------------------------------------------------------
@@ -40,13 +45,17 @@ port = 8081
 
 # Turn this off for production
 debug = True
+# def verify_cert():
+#     requests.get('https://somesite.com', cert='/path/server.crt', verify=True)
 
 def run_server():    
     '''
         run_server
         Runs a bottle server
     '''
-    run(host=host, port=port, debug=debug)
+    # run(host=host, port=port, debug=debug)
+    run(host=host, port=port, debug=debug, server='gunicorn', keyfile='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.key', 
+     certfile='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.crt', config='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.ext')
 
 #-----------------------------------------------------------------------------
 # Optional SQL support
@@ -75,10 +84,11 @@ def manage_db():
         manage_db
         Starts up and re-initialises an SQL databse for the server
     '''
-    database_args = ":memory:" # Currently runs in RAM, might want to change this to a file if you use it
-    # sql_db = sql.SQLDatabase(database_args=database_args)
-    sql_db = sql.SQLDatabase()
+    database_args = "user1.db" # Currently runs in RAM, might want to change this to a file if you use it
+    sql_db = sql.SQLDatabase(database_args)
+    # sql_db = sql.SQLDatabase()
     sql_db.database_setup()
+    sql_db.commit()
 
     return
 
