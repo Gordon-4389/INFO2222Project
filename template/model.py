@@ -13,6 +13,7 @@ import hashlib
 # RSA encryption
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+from Crypto import Random
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -37,18 +38,31 @@ def register_form():
 
 def register_check(username, password):
     sql_db = SQLDatabase('user1.db')
-    # generate the salt
-    salt = str(random.randint(0, 1023)) + username
+
+    # Random Salt Generation and shuffle it twice
+    salt = str(random.randint(0000, 9999)) + username
+    rand_salt = ''.join(random.sample(salt,len(salt)))
+    rand_salt = ''.join(random.sample(rand_salt,len(rand_salt)))
     # combine the salt with password
-    salt_w_password = salt + password
-    # hash pwd
+    salt_w_password = rand_salt + password
+    # hash password
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-    sql_db.add_user(username, hashed_password, salt)
+
+    # Key Generation
+    private_key = RSA.generate(2048, Random.new().read)
+    public_key = private_key.public_key()
+
+    # Add user into database
+    pub_key_db = convert_pub_key_to_str(public_key)
+    print(pub_key_db)
+    sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
     sql_db.commit()
-    print(hashed_password)
+    # print(hashed_password)
     # print(tre)
+
+    # TODO: Private key handling here, or maybe output it
+
     return page_view("valid", name=username)
-    # do the database insert here
 
 #-----------------------------------------------------------------------------
 # Login
@@ -101,7 +115,7 @@ def login_check(username, password):
     
 
     if sql_db.check_credentials(username, hashed_password) == False:
-        err_str = "Incorrect password"
+        err_str = "Incorrect username or password"
         login = False
     
     
@@ -125,22 +139,34 @@ def login_check(username, password):
         return page_view("invalid", reason=err_str)
 
 #-----------------------------------------------------------------------------
-# Friend list
+# Key formatting and handling
 #-----------------------------------------------------------------------------
-# Display Friend List
-# def display_friends(username):
-#     '''
-#         display_friends
-#         Display friends of user
+# Convert Public Key (PEM format) to string and vice versa
+def convert_pub_key_to_str(public_key):
+    pem_prefix = '-----BEGIN PUBLIC KEY-----\n'
+    pem_suffix = '\n-----END PUBLIC KEY-----'
 
-#         :: username :: The username of user
+    # Export PEM format key to multi-line string format
+    to_convert = public_key.exportKey('PEM').decode('ASCII')
+    # Remove prefixes & suffixes
+    to_convert = to_convert.removeprefix(pem_prefix).removesuffix(pem_suffix)
+    # Remove newline characters
+    converted_pub_key = to_convert.replace('\n','') 
+    return converted_pub_key
 
-#         Return a friend list of user (page view)
-#     '''
-#     sql_db = SQLDatabase('user1.db')
-#     friends = sql.get_friends(username)
+def read_public_key_as_PEM(public_key_string):
+    '''
+        read_public_key
+        Converts the public key string found in User to a PEM format and imports it
 
-#     return #page_view("friends", list=friends)
+        :: public_key_string :: Public key in ASCII format after retrieval from database
+        
+        Returns the imported key
+    '''
+    # Attach prefixes and suffixes back into string
+    to_import = '-----BEGIN PUBLIC KEY-----\n{}\n-----END PUBLIC KEY-----'.format(public_key_string)
+    imported_key = RSA.import_key(to_import) # May/may not be needed
+    return imported_key
 
     
 #-----------------------------------------------------------------------------
@@ -159,6 +185,11 @@ def send_mess(receiver, message):
 def incoming():
     # get list of message here
     return page_view("incoming")
+
+
+#-----------------------------------------------------------------------------
+# TODO: Escape character handling in SQL lines
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # About

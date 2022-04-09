@@ -51,8 +51,7 @@ def run_server():
     '''
     # run(host=host, port=port, debug=debug)
     file_name = os.path.dirname(__file__)+"info2222.go."
-    run(host=host, port=port, debug=debug)
-    # , server='gunicorn', keyfile=file_name+'key', certfile=file_name+'crt', config=file_name+'ext')
+    run(host=host, port=port, debug=debug) # , server='gunicorn', keyfile=file_name+'key', certfile=file_name+'crt', config=file_name+'ext')
 
 #-----------------------------------------------------------------------------
 # Optional SQL support
@@ -97,7 +96,7 @@ def manage_db():
 
 command_list = {
     'manage_db' : manage_db,
-    'server'       : run_server
+    'server'    : run_server
 }
 
 # The default command if none other is given

@@ -51,6 +51,7 @@ class SQLDatabase():
             admin INTEGER DEFAULT 0,
             salt TEXT
             friends TEXT
+            public_key TEXT
         )""")
 
         self.commit()
@@ -71,13 +72,13 @@ class SQLDatabase():
     #-----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, salt, admin=0):
+    def add_user(self, username, password, salt, public_key_str, admin=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin}, '{salt}')
+                VALUES({id}, '{username}', '{password}', {admin}, '{salt}', '{public_key}')
             """
 
-        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin)
+        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin, public_key=public_key_str)
 
         self.execute(sql_cmd)
         self.commit()
