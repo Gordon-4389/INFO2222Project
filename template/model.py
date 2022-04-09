@@ -10,6 +10,7 @@ import random
 # from no_sql_db import database
 from sql import SQLDatabase
 import hashlib
+# RSA encryption
 Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
