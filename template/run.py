@@ -27,8 +27,8 @@ from bottle import Bottle
 import model
 import view
 import controller
+import os
 # import requests
-# from no_sql_db import database
 
 #-----------------------------------------------------------------------------
 
@@ -50,8 +50,9 @@ def run_server():
         Runs a bottle server
     '''
     # run(host=host, port=port, debug=debug)
-    run(host=host, port=port, debug=debug, server='gunicorn', keyfile='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.key', 
-     certfile='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.crt', config='/Users/nhupham/Downloads/INFO2222Project/template/info2222.go.ext')
+    file_name = os.path.dirname(__file__)+"info2222.go."
+    run(host=host, port=port, debug=debug, server='gunicorn', keyfile=file_name+'key', 
+     certfile=file_name+'crt', config=file_name+'ext')
 
 #-----------------------------------------------------------------------------
 # Optional SQL support
