@@ -94,7 +94,7 @@ def login_check(username, password):
     salt_w_password = salt + password
     # hash pwd
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-    print(hashed_password)
+    # print(hashed_password)
 
     
 
@@ -112,11 +112,33 @@ def login_check(username, password):
     #     login = False
         
     if login: 
-        return page_view("valid", name=username)
+        friendlist = sql_db.get_user()
+        print(friendlist)
+        # a = ','.join(friendlist)
+        # print(a)
+
+        
+        return page_view("login_valid", name=username, list=friendlist)
     else:
         return page_view("invalid", reason=err_str)
 
     
+#-----------------------------------------------------------------------------
+# Send message
+#-----------------------------------------------------------------------------
+def mess_form():
+    return page_view("message_send")
+
+def send_mess(receiver, message):
+    # ecrypt mess here and then store it in the database
+    return page_view("send_result", name=receiver)
+
+#-----------------------------------------------------------------------------
+# See incoming message
+#-----------------------------------------------------------------------------
+def incoming():
+    # get list of message here
+    return page_view("incoming")
 
 #-----------------------------------------------------------------------------
 # About

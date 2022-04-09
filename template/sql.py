@@ -92,6 +92,26 @@ class SQLDatabase():
         return s
 
 
+    def get_user(self):
+        sql_query = """
+                SELECT username
+                FROM Users
+            """
+        
+        # sql_query = sql_query.format(username=username)
+
+        self.cur.execute(sql_query)
+        
+        s = self.cur.fetchall()
+        return_list = []
+        i = 0
+        
+        while i < len(s):
+            return_list.append(s[i][0])
+            i+=1
+        
+        return return_list 
+     #-----------------------------------------------------------------------------
     # Check login credentials
     def check_credentials(self, username, password):
         sql_query = """

@@ -119,6 +119,24 @@ def post_register():
     email = request.forms.get('email')
     return model.register_check(username, password)
 # ------------------------------------------------------------------------------
+@get('/send')
+def get_sendmess_page():
+    return model.mess_form()
+
+# send message
+@post('/send')
+def post_message():
+    receiver = request.forms.get('receiver')
+    message = request.forms.get('message')
+    return model.send_mess(receiver, message)
+
+# ------------------------------------------------------------------------------
+
+@get('/incoming_mess')
+def get_incoming_page():
+    return model.incoming()
+
+# ------------------------------------------------------------------------------
 @get('/about')
 def get_about():
     '''

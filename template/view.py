@@ -4,6 +4,9 @@
 #-----------------------------------------------------------------------------
 
 import string, os
+from bottle import SimpleTemplate 
+
+
 
 class View():
     '''
@@ -101,8 +104,11 @@ class View():
             :: template :: The template to use
             :: kwargs :: A dictionary of key value pairs to pass to the template
         '''
-        template = string.Template(template)
-        template = template.safe_substitute(**kwargs)
+
+        # template = string.Template(template)
+        # template = template.safe_substitute(**kwargs)
+        template = SimpleTemplate(template)
+        template = template.render(**kwargs)
         return  template
 
 
