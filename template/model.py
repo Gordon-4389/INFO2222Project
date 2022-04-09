@@ -10,7 +10,8 @@ import random
 # from no_sql_db import database
 from sql import SQLDatabase
 import hashlib
-# from run import manage_db
+Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -47,6 +48,7 @@ def register_check(username, password):
     # print(tre)
     return page_view("valid", name=username)
     # do the database insert here
+
 #-----------------------------------------------------------------------------
 # Login
 #-----------------------------------------------------------------------------
@@ -58,7 +60,6 @@ def login_form():
     '''
     return page_view("login")
 
-#mkmk
 #-----------------------------------------------------------------------------
 
 # Check the login credentials
@@ -94,7 +95,7 @@ def login_check(username, password):
     salt_w_password = salt + password
     # hash pwd
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-    print(hashed_password)
+    # print(hashed_password)
 
     
 
@@ -116,7 +117,24 @@ def login_check(username, password):
     else:
         return page_view("invalid", reason=err_str)
 
-    
+#-----------------------------------------------------------------------------
+# Friend list
+#-----------------------------------------------------------------------------
+# Display Friend List
+# def display_friends(username):
+#     '''
+#         display_friends
+#         Display friends of user
+
+#         :: username :: The username of user
+
+#         Return a friend list of user (page view)
+#     '''
+#     sql_db = SQLDatabase('user1.db')
+#     friends = sql.get_friends(username)
+
+#     return #page_view("friends", list=friends)
+
 
 #-----------------------------------------------------------------------------
 # About
