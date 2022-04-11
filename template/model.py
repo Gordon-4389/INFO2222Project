@@ -33,7 +33,7 @@ def index():
 def register_form():
     return page_view("register")
 
-def register_check(username, password):
+def register_check(username, password, public_key):
     sql_db = SQLDatabase('user1.db')
     # generate the salt
     salt = str(random.randint(0, 1023)) + username
@@ -41,9 +41,11 @@ def register_check(username, password):
     salt_w_password = salt + password
     # hash pwd
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-    sql_db.add_user(username, hashed_password, salt)
+    # print(username)
+    sql_db.add_user(username, hashed_password, salt, public_key)
+    # print("hello")
     sql_db.commit()
-    print(hashed_password)
+    # print(hashed_password)
     # print(tre)
     return page_view("valid", name=username)
     # do the database insert here
@@ -89,6 +91,8 @@ def login_check(username, password):
     salt = str(random.randint(0, 1023)) + username
     # getting the salt of this username
     salt = sql_db.get_salt(username)
+    if salt == None:
+        return page_view("invalid", reason="error")
     # print(salt)
     # combine the salt with password
     salt_w_password = salt + password
@@ -113,7 +117,7 @@ def login_check(username, password):
         
     if login: 
         friendlist = sql_db.get_user()
-        print(friendlist)
+        # print(friendlist)
         # a = ','.join(friendlist)
         # print(a)
 
