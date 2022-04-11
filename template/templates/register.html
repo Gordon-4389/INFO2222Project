@@ -9,6 +9,7 @@ Register with a username and password
     <input value="Register" type="submit" />
 </form>
 </p>
+
 </center>
 <script>
     const crypto = require("crypto");
@@ -20,10 +21,4 @@ Register with a username and password
     // The standard secure default length for RSA keys is 2048 bits
     modulusLength: 2048,
     });
-    function add_publick() {
-        const sqlite3 = require('sqlite3');
-        let sql_db = new sqlite3.Database("user1.db");
-        var user_name = document.getElementById('name').value;
-        sql_db.run('INSERT INTO Users (username, publick) VALUES (?, ?)', [user_name, publicKey]);
-    }
 </script>

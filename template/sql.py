@@ -49,23 +49,23 @@ class SQLDatabase():
             username TEXT,
             password TEXT,
             admin INTEGER DEFAULT 0,
-            salt TEXT
-            friends TEXT
-            public_key TEXT
+            salt TEXT,
+            friends TEXT,
+            publickey TEXT
         )""")
 
         self.commit()
 
         # Message Logs (encrypted)
-        self.execute("""CREATE TABLE Messages(
-            sender TEXT,
-            receiver TEXT,
-            message TEXT 
-        )""")
-        self.commit()
+        # self.execute("""CREATE TABLE Encrypted(
+        #     sender TEXT,
+        #     receiver TEXT,
+        #     ciphermessages TEXT 
+        # )""")
+        # self.commit()
 
         # Add our admin user
-        self.add_user('admin', admin_password, '0000', admin=1)
+        self.add_user('admin', admin_password, '0000', 'aaaaa', admin=1)
 
     #-----------------------------------------------------------------------------
     # User handling
@@ -75,10 +75,10 @@ class SQLDatabase():
     def add_user(self, username, password, salt, public_key_str, admin=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin}, '{salt}', '{public_key}')
+                VALUES({id}, '{username}', '{password}', {admin}, '{salt}', "", '{publickey}')
             """
 
-        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin, public_key=public_key_str)
+        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin, publickey=public_key_str)
 
         self.execute(sql_cmd)
         self.commit()

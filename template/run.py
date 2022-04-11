@@ -51,8 +51,8 @@ def run_server():
     '''
     # run(host=host, port=port, debug=debug)
     # file_name = os.path.dirname(__file__)+"info2222.go."
-    run(host=host, port=port, debug=debug, server='gunicorn', keyfile='/Users/nhupham/Downloads/template/info2222.go.key', 
-     certfile='/Users/nhupham/Downloads/template/info2222.go.crt', config='/Users/nhupham/Downloads/template/info2222.go.ext')
+    run(host=host, port=port, debug=debug) #, server='gunicorn', keyfile='/Users/nhupham/Downloads/template/info2222.go.key', 
+    #  certfile='/Users/nhupham/Downloads/template/info2222.go.crt', config='/Users/nhupham/Downloads/template/info2222.go.ext')
 
 #-----------------------------------------------------------------------------
 # Optional SQL support
@@ -83,9 +83,11 @@ def manage_db():
     '''
     database_args = "user1.db" # Currently runs in RAM, might want to change this to a file if you use it
     sql_db = sql.SQLDatabase(database_args)
-    # sql_db = sql.SQLDatabase()
     sql_db.database_setup()
     sql_db.commit()
+
+    # sql_db.execute("SELECT * FROM Users")
+    # print(sql_db.cur.fetchall())
 
     return
 

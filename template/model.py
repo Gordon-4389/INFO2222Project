@@ -55,13 +55,11 @@ def register_check(username, password):
     # Add user into database
     pub_key_db = convert_pub_key_to_str(public_key)
     # print(pub_key_db)
+    print(username, hashed_password, rand_salt, pub_key_db)
     sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
     sql_db.commit()
     # print(hashed_password)
     # print(tre)
-
-    # TODO: Private key handling here, or maybe output it
-
 
     return page_view("valid", name=username)
 
@@ -102,6 +100,10 @@ def login_check(username, password):
     #     err_str = "Incorrect Password"
     #     login = False
     sql_db = SQLDatabase('user1.db')
+    # sql_db.execute("SELECT * FROM Users"))
+    # pirnt(sql_db.cur.fetchall())
+    # print(username)
+    # print(password)
 
     # salt = str(random.randint(0, 1023)) + username
     # getting the salt of this username
