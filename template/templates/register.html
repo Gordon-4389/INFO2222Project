@@ -2,7 +2,7 @@ Register with a username and password
 </p>
 <p>
 <form action="/register" method="post">
-    Username: <input name="username" type="text" />
+    Username: <input name="username" type="text" id="name"/>
 </br>
     Password: <input name="password" type="password" />
 </br>
@@ -10,3 +10,20 @@ Register with a username and password
 </form>
 </p>
 </center>
+<script>
+    const crypto = require("crypto");
+
+    // The `generateKeyPairSync` method accepts two arguments:
+    // 1. The type ok keys we want, which in this case is "rsa"
+    // 2. An object with the properties of the key
+    const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+    // The standard secure default length for RSA keys is 2048 bits
+    modulusLength: 2048,
+    });
+    function add_publick() {
+        const sqlite3 = require('sqlite3');
+        let sql_db = new sqlite3.Database("user1.db");
+        var user_name = document.getElementById('name').value;
+        sql_db.run('INSERT INTO Users (username, publick) VALUES (?, ?)', [user_name, publicKey]);
+    }
+</script>

@@ -50,9 +50,9 @@ def run_server():
         Runs a bottle server
     '''
     # run(host=host, port=port, debug=debug)
-    file_name = os.path.dirname(__file__)+"info2222.go."
-    run(host=host, port=port, debug=debug, server='gunicorn', keyfile=file_name+'key', 
-     certfile=file_name+'crt', config=file_name+'ext')
+    # file_name = os.path.dirname(__file__)+"info2222.go."
+    run(host=host, port=port, debug=debug, server='gunicorn', keyfile='/Users/nhupham/Downloads/template/info2222.go.key', 
+     certfile='/Users/nhupham/Downloads/template/info2222.go.crt', config='/Users/nhupham/Downloads/template/info2222.go.ext')
 
 #-----------------------------------------------------------------------------
 # Optional SQL support

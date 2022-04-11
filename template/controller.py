@@ -117,6 +117,7 @@ def post_register():
     username = request.forms.get('username')
     password = request.forms.get('password')
     email = request.forms.get('email')
+    
     return model.register_check(username, password)
 # ------------------------------------------------------------------------------
 @get('/send')
