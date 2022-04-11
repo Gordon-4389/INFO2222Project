@@ -178,15 +178,15 @@ class SQLDatabase():
         
         return return_list 
      #-----------------------------------------------------------------------------
-    # Check login credentials
+    # Check login credentials (check password database match with username)
     def check_credentials(self, username, password):
         sql_query = """
-                SELECT username, password
+                SELECT username, password, salt
                 FROM Users
-                WHERE username = '{username}' AND password = '{password}'
+                WHERE username = '{username}'
             """
 
-        sql_query = sql_query.format(username=username, password=password)
+        sql_query = sql_query.format(username=username)
 
         
         self.cur.execute(sql_query)
