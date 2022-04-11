@@ -97,7 +97,7 @@ def manage_db():
 
 command_list = {
     'manage_db' : manage_db,
-    'server'       : run_server
+    'server'    : run_server
 }
 
 # The default command if none other is given

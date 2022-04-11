@@ -10,9 +10,6 @@ import random
 # from no_sql_db import database
 from sql import SQLDatabase
 import hashlib
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import AES, PKCS1_OAEP
-from Crypto import Random
 # from run import manage_db
 
 # Initialise our views, all arguments are defaults for the template
@@ -44,20 +41,12 @@ def register_check(username, password):
     salt_w_password = salt + password
     # hash pwd
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-    # publick = get_publick()
-    print(hashed_password)
-
     sql_db.add_user(username, hashed_password, salt)
     sql_db.commit()
-    
+    print(hashed_password)
+    # print(tre)
     return page_view("valid", name=username)
     # do the database insert here
-
-def get_publick():
-    private_key = RSA.generate(1024, Random.new().read).exportKey()
-    public_key = private_key.publickey().exportKey()
-    print(private_key)
-    return public_key
 #-----------------------------------------------------------------------------
 # Login
 #-----------------------------------------------------------------------------
@@ -86,18 +75,26 @@ def login_check(username, password):
 
     # By default assume good creds
     login = True
+
+    # if database.search_table("users", "username", username) == None: # Incorrect Username
+    #     err_str = "Incorrect Username!!!"
+    #     login = False
+
+    # # Hash magic on password here & add salt
+    # if database.search_table("users", "password", password) == None: # Incorrect pwd
+    #     err_str = "Incorrect Password"
+    #     login = False
     sql_db = SQLDatabase('user1.db')
 
+    salt = str(random.randint(0, 1023)) + username
     # getting the salt of this username
     salt = sql_db.get_salt(username)
-    if salt == None:
-        return page_view("invalid", reason="username is not correct")
-    
+    # print(salt)
     # combine the salt with password
     salt_w_password = salt + password
     # hash pwd
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-   
+    # print(hashed_password)
 
     
 
@@ -105,10 +102,22 @@ def login_check(username, password):
         err_str = "Incorrect password"
         login = False
     
-
+    
+    # if username != "admin": # Wrong Username
+    #     err_str = "Incorrect Username"
+    #     login = False
+    
+    # if password != "password": # Wrong password
+    #     err_str = "Incorrect Password"
+    #     login = False
         
     if login: 
         friendlist = sql_db.get_user()
+        print(friendlist)
+        # a = ','.join(friendlist)
+        # print(a)
+
+        
         return page_view("login_valid", name=username, list=friendlist)
     else:
         return page_view("invalid", reason=err_str)

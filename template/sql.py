@@ -50,9 +50,18 @@ class SQLDatabase():
             password TEXT,
             admin INTEGER DEFAULT 0,
             salt TEXT
-            publick TEXT
+            friends TEXT
+            public_key TEXT
         )""")
 
+        self.commit()
+
+        # Message Logs (encrypted)
+        self.execute("""CREATE TABLE Messages(
+            sender TEXT,
+            receiver TEXT,
+            message TEXT 
+        )""")
         self.commit()
 
         # Add our admin user
@@ -63,13 +72,13 @@ class SQLDatabase():
     #-----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, salt, admin=0):
+    def add_user(self, username, password, salt, public_key_str, admin=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin}, '{salt}')
+                VALUES({id}, '{username}', '{password}', {admin}, '{salt}', '{public_key}')
             """
 
-        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin)
+        sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin, public_key=public_key_str)
 
         self.execute(sql_cmd)
         self.commit()
@@ -82,6 +91,59 @@ class SQLDatabase():
     #         """
 
     #     sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin)
+    #-----------------------------------------------------------------------------
+
+    # Get friend_list from a user in Table Users
+    def get_friends(self, username):
+        sql_query = """
+                SELECT friends
+                FROM Users
+                WHERE username = '{username}'
+            """
+
+        # Check if user exists
+        self.execute(sql_query)
+
+        # Return result as a form of a list
+        result = self.cur.fetchone()[0]
+        print(result)
+        friend_list = result.split(",")
+        print(friend_list)
+        
+        return friend_list
+
+
+
+    #-----------------------------------------------------------------------------
+    # Add Friend to user
+    def add_friend(self, username, friend):
+        # Query if friend already exists
+        friend_list = self.get_friends(username)
+
+        # If true: do nothing, if false insert friend into friend list
+        if friend not in friend_list:
+            friend_list.append(friend)
+            to_insert = ","
+            to_insert.join(friend_list)
+            print(to_insert)
+
+            # replace friend_list entry
+            sql_cmd = """
+                UPDATE Users
+                SET friends = '{friends}'
+                WHERE username = '{username}' 
+            """
+
+            sql_cmd = sql_cmd.format(username=username, friends=to_insert)
+            self.cur.execute(sql_cmd)
+            self.commit()
+
+        
+
+        return
+
+
+
     #-----------------------------------------------------------------------------
     def get_salt(self, username):
         sql_query = """
