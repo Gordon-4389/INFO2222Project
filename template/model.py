@@ -54,13 +54,14 @@ def register_check(username, password):
 
     # Add user into database
     pub_key_db = convert_pub_key_to_str(public_key)
-    print(pub_key_db)
+    # print(pub_key_db)
     sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
     sql_db.commit()
     # print(hashed_password)
     # print(tre)
 
     # TODO: Private key handling here, or maybe output it
+
 
     return page_view("valid", name=username)
 
@@ -184,6 +185,10 @@ def send_mess(receiver, message):
 #-----------------------------------------------------------------------------
 def incoming():
     # get list of message here
+
+
+
+
     return page_view("incoming")
 
 
