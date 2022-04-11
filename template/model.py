@@ -10,10 +10,7 @@ import random
 # from no_sql_db import database
 from sql import SQLDatabase
 import hashlib
-# RSA encryption
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
-from Crypto import Random
+# from run import manage_db
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -38,15 +35,13 @@ def register_form():
 
 def register_check(username, password):
     sql_db = SQLDatabase('user1.db')
-
-    # Random Salt Generation and shuffle it twice
-    salt = str(random.randint(0000, 9999)) + username
-    rand_salt = ''.join(random.sample(salt,len(salt)))
-    rand_salt = ''.join(random.sample(rand_salt,len(rand_salt)))
+    # generate the salt
+    salt = str(random.randint(0, 1023)) + username
     # combine the salt with password
-    salt_w_password = rand_salt + password
-    # hash password
+    salt_w_password = salt + password
+    # hash pwd
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
+<<<<<<< HEAD
 
     # Key Generation
     private_key = RSA.generate(2048, Random.new().read)
@@ -56,15 +51,21 @@ def register_check(username, password):
     pub_key_db = convert_pub_key_to_str(public_key)
     # print(pub_key_db)
     sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
+=======
+    sql_db.add_user(username, hashed_password, salt)
+>>>>>>> dd38a1c33108015425d4f6437fbf260ca0caeb83
     sql_db.commit()
-    # print(hashed_password)
+    print(hashed_password)
     # print(tre)
+<<<<<<< HEAD
 
     # TODO: Private key handling here, or maybe output it
 
 
+=======
+>>>>>>> dd38a1c33108015425d4f6437fbf260ca0caeb83
     return page_view("valid", name=username)
-
+    # do the database insert here
 #-----------------------------------------------------------------------------
 # Login
 #-----------------------------------------------------------------------------
@@ -76,6 +77,7 @@ def login_form():
     '''
     return page_view("login")
 
+#mkmk
 #-----------------------------------------------------------------------------
 
 # Check the login credentials
@@ -103,7 +105,7 @@ def login_check(username, password):
     #     login = False
     sql_db = SQLDatabase('user1.db')
 
-    # salt = str(random.randint(0, 1023)) + username
+    salt = str(random.randint(0, 1023)) + username
     # getting the salt of this username
     salt = sql_db.get_salt(username)
     # print(salt)
@@ -116,7 +118,7 @@ def login_check(username, password):
     
 
     if sql_db.check_credentials(username, hashed_password) == False:
-        err_str = "Incorrect username or password"
+        err_str = "Incorrect password"
         login = False
     
     
@@ -139,36 +141,6 @@ def login_check(username, password):
     else:
         return page_view("invalid", reason=err_str)
 
-#-----------------------------------------------------------------------------
-# Key formatting and handling
-#-----------------------------------------------------------------------------
-# Convert Public Key (PEM format) to string and vice versa
-def convert_pub_key_to_str(public_key):
-    pem_prefix = '-----BEGIN PUBLIC KEY-----\n'
-    pem_suffix = '\n-----END PUBLIC KEY-----'
-
-    # Export PEM format key to multi-line string format
-    to_convert = public_key.exportKey('PEM').decode('ASCII')
-    # Remove prefixes & suffixes
-    to_convert = to_convert.removeprefix(pem_prefix).removesuffix(pem_suffix)
-    # Remove newline characters
-    converted_pub_key = to_convert.replace('\n','') 
-    return converted_pub_key
-
-def read_public_key_as_PEM(public_key_string):
-    '''
-        read_public_key
-        Converts the public key string found in User to a PEM format and imports it
-
-        :: public_key_string :: Public key in ASCII format after retrieval from database
-        
-        Returns the imported key
-    '''
-    # Attach prefixes and suffixes back into string
-    to_import = '-----BEGIN PUBLIC KEY-----\n{}\n-----END PUBLIC KEY-----'.format(public_key_string)
-    imported_key = RSA.import_key(to_import) # May/may not be needed
-    return imported_key
-
     
 #-----------------------------------------------------------------------------
 # Send message
@@ -190,11 +162,6 @@ def incoming():
 
 
     return page_view("incoming")
-
-
-#-----------------------------------------------------------------------------
-# TODO: Escape character handling in SQL lines
-#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # About

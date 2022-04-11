@@ -84,6 +84,13 @@ class SQLDatabase():
         self.commit()
         return True
 
+    # def add_publick(self, username, publick):
+    #     sql_cmd = """
+    #             INSERT INTO Users
+    #             VALUES({id}, '{username}', {admin}, '{salt}')
+    #         """
+
+    #     sql_cmd = sql_cmd.format(id=0, username=username, password=password, salt=salt, admin=admin)
     #-----------------------------------------------------------------------------
 
     # Get friend_list from a user in Table Users
@@ -143,10 +150,12 @@ class SQLDatabase():
             """
         
         sql_query = sql_query.format(username=username)
-
+        print(username)
         self.cur.execute(sql_query)
-        
-        s = self.cur.fetchone()[0]
+        try:
+            s = self.cur.fetchone()[0]
+        except:
+            return None
         # print(s[0])
         # return curs.fetchone()
         return s
