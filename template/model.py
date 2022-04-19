@@ -37,6 +37,9 @@ def register_form():
     return page_view("register")
 
 def register_check(username, password):
+
+    if username is "" or password is "":
+        
     sql_db = SQLDatabase('user1.db')
 
     # Random Salt Generation and shuffle it twice
