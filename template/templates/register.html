@@ -1,24 +1,32 @@
 Register with a username and password
 </p>
 <p>
-<form action="/register" method="post">
+<form action="/register" id= "register" method="post">
     Username: <input name="username" type="text" id="name"/>
 </br>
     Password: <input name="password" type="password" />
 </br>
-    <input value="Register" type="submit" />
+    <input type="hidden" id="PublicKey" name="PublicKey" value="temporarystring" />
+    <input value="Register" type="submit"/>
+    <script>
+        let keyPair = await window.crypto.subtle.generateKey(
+            {
+            name: "RSA-OAEP",
+            modulusLength: 2048,
+            publicExponent: new Uint8Array([1, 0, 1]),
+            hash: "SHA-256"
+            },
+            true,
+            ["encrypt", "decrypt"]
+        );
+
+        const publicKey = keyPair.publicKey;
+        console.log(publicKey)
+        await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+        document.forms["register"].PublicKey.value = publicKey;
+        document.register.submit();
+    </script>
 </form>
 </p>
 
 </center>
-<script>
-    const crypto = require("crypto");
-
-    // The `generateKeyPairSync` method accepts two arguments:
-    // 1. The type ok keys we want, which in this case is "rsa"
-    // 2. An object with the properties of the key
-    const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-    // The standard secure default length for RSA keys is 2048 bits
-    modulusLength: 2048,
-    });
-</script>

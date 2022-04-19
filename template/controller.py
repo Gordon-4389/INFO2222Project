@@ -116,7 +116,9 @@ def get_register_controller():
 def post_register():
     username = request.forms.get('username')
     password = request.forms.get('password')
-    email = request.forms.get('email')
+    # email = request.forms.get('email')
+    public_key = request.forms.get('PublicKey')
+    print(public_key)
     
     return model.register_check(username, password)
 # ------------------------------------------------------------------------------

@@ -55,7 +55,7 @@ def register_check(username, password):
     # Add user into database
     pub_key_db = convert_pub_key_to_str(public_key)
     # print(pub_key_db)
-    print(username, hashed_password, rand_salt, pub_key_db)
+    # print(username, hashed_password, rand_salt, pub_key_db)
     sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
     sql_db.commit()
     # print(hashed_password)
