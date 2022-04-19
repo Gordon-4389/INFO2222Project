@@ -48,17 +48,17 @@ class SQLDatabase():
             Id INT,
             username TEXT,
             password TEXT,
-            salt TEXT
-            public_key TEXT
+            salt TEXT,
+            publickey TEXT
         )""")
 
         self.commit()
 
-        # # Message Logs (encrypted)
-        # self.execute("""CREATE TABLE Messages(
+        # Message Logs (encrypted)
+        # self.execute("""CREATE TABLE Encrypted(
         #     sender TEXT,
         #     receiver TEXT,
-        #     message TEXT 
+        #     ciphermessages TEXT 
         # )""")
         # self.commit()
 
