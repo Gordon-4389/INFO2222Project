@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 
 # This class is a simple handler for all of our SQL database actions
 # Practicing a good separation of concerns, we should only ever call 
@@ -42,6 +43,8 @@ class SQLDatabase():
         # Clear the database if needed
         self.execute("DROP TABLE IF EXISTS Users")
         self.commit()
+        self.execute("DROP TABLE IF EXISTS Encrypted")
+        self.commit()
 
         # Create the users table
         self.execute("""CREATE TABLE Users(
@@ -55,15 +58,17 @@ class SQLDatabase():
         self.commit()
 
         # Message Logs (encrypted)
-        # self.execute("""CREATE TABLE Encrypted(
-        #     sender TEXT,
-        #     receiver TEXT,
-        #     ciphermessages TEXT 
-        # )""")
-        # self.commit()
+        self.execute("""CREATE TABLE Encrypted(
+            sender TEXT,
+            receiver TEXT,
+            ciphermessages TEXT 
+        )""")
+        self.commit()
 
         # Add our admin user
-        self.add_user('admin', admin_password, '0000', "ko")
+        salt = '0000'
+        admin_pwd = hashlib.sha256((salt+admin_password).encode()).hexdigest()
+        self.add_user('admin', admin_pwd, salt, "ko")
         self.commit()
 
     #-----------------------------------------------------------------------------
@@ -74,66 +79,22 @@ class SQLDatabase():
     def add_user(self, username, password, salt, public_key_str):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES('{username}', '{password}', '{salt}', '{public_key}')
+                VALUES({id},'{username}', '{password}', '{salt}', '{public_key}')
             """
+        query_num_users = """
+                SELECT COUNT(*)
+                FROM Users
+            """
+        self.cur.execute(query_num_users)
+        num_users = self.cur.fetchone()[0]
+        this_user_id = num_users
+        # print(num_users)
 
-        sql_cmd = sql_cmd.format(username=username, password=password, salt=salt,  public_key=public_key_str)
+        sql_cmd = sql_cmd.format(id=this_user_id, username=username, password=password, salt=salt,  public_key=public_key_str)
         # print(public_key_str)
         self.cur.execute(sql_cmd)
         self.commit()
         return True
-
-
-    # # Get friend_list from a user in Table Users
-    # def get_friends(self, username):
-    #     sql_query = """
-    #             SELECT friends
-    #             FROM Users
-    #             WHERE username = '{username}'
-    #         """
-
-    #     # Check if user exists
-    #     self.execute(sql_query)
-
-    #     # Return result as a form of a list
-    #     result = self.cur.fetchone()[0]
-    #     print(result)
-    #     friend_list = result.split(",")
-    #     print(friend_list)
-        
-    #     return friend_list
-
-
-
-    # #-----------------------------------------------------------------------------
-    # # Add Friend to user
-    # def add_friend(self, username, friend):
-    #     # Query if friend already exists
-    #     friend_list = self.get_friends(username)
-
-    #     # If true: do nothing, if false insert friend into friend list
-    #     if friend not in friend_list:
-    #         friend_list.append(friend)
-    #         to_insert = ","
-    #         to_insert.join(friend_list)
-    #         print(to_insert)
-
-    #         # replace friend_list entry
-    #         sql_cmd = """
-    #             UPDATE Users
-    #             SET friends = '{friends}'
-    #             WHERE username = '{username}' 
-    #         """
-
-    #         sql_cmd = sql_cmd.format(username=username, friends=to_insert)
-    #         self.cur.execute(sql_cmd)
-    #         self.commit()
-
-        
-
-    #     return
-
-
 
     #-----------------------------------------------------------------------------
     def get_salt(self, username):
@@ -147,14 +108,11 @@ class SQLDatabase():
         print(username)
         self.cur.execute(sql_query)
         try:
-            print(self.cur.fetchone())
-            s = self.cur.fetchone()[0]
+            salt = self.cur.fetchone()[0]
             # print(s)
         except:
             return None
-        # print(s[0])
-        # return curs.fetchone()
-        return s
+        return salt
 
 
     def get_user(self):
@@ -176,7 +134,7 @@ class SQLDatabase():
             i+=1
         
         return return_list 
-     #-----------------------------------------------------------------------------
+    #-----------------------------------------------------------------------------
     # Check login credentials (check password database match with username)
     def check_credentials(self, username, password):
         sql_query = """
@@ -203,3 +161,25 @@ class SQLDatabase():
         #     return True
         # else:
         #     return False
+
+    #-----------------------------------------------------------------------------
+    # Get ciphertexts
+    def get_user_cipertexts(self, user):
+        ciphertexts = """
+                SELECT ciphermessages
+                FROM Encrypted
+                WHERE receiver = '{username}'
+            """
+        ciphertexts = ciphertexts.format(username=user)
+        self.cur.execute(ciphertexts)
+        message_list = self.cur.fetchall()
+        print(message_list)
+        # senders = """
+        #         SELECT sender
+        #         FROM Encrypted
+        #         WHERE receiver = '{username}'
+        #     """.format(username=user)
+        # self.cur.execute(senders)
+        # sender_list = self.cur.fetchall()
+        # print(sender_list)
+        return message_list

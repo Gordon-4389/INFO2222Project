@@ -1,11 +1,51 @@
-<p>All of your incoming messages are below:</p>
+<style>
+    table, th, td {
+        border: 1px solid;
+        border-collapse: collapse;
+    }
+    td:hover{
+        color: blue;
+        text-decoration: underline;
+    }
+    table {
+        table-layout: auto;
+        width: 50%;
+    }
+</style>
 
-% message = list
+<p>All of your incoming encrypted messages are below, please select a message to decrypt it:</p>
 
-<ul>
-    % for mess in message:
-    <p><li>{{mess}}</li><br>
-    </p>
-    % end
-</ul>
-</p>>
+<!-- % messages = m_list -->
+<!-- % senders = s_list -->
+% m_list  = ["dasadasdaddsadas","is","the","mesasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasage","list"]
+% s_list  = ["thiadsddsadsaas","is","the","sender","lst"]
+% if not m_list:
+<p>You have no messages!</p>
+% else:
+<table>
+    <thead>
+      <tr>
+        <th>Sender</th><th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+        % for n in range(len(m_list)):
+        <tr>
+            <td>{{s_list[n]}}</td>
+            <td id= "message_{{n}}" onclick="decrypt({{n}})" > {{m_list[n]}} </td>
+        </tr>
+        % end
+    </tbody>
+  </table>
+% end
+<script>
+    const messages =  {{!m_list}};
+    function decrypt(n){  
+        const to_decrypt = messages[n];
+        const m_id = "message_".concat(n.toString());
+        // alert(m_id)
+        alert(document.getElementById(m_id));
+        alert(messages[n]);
+        };
+</script>
+

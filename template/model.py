@@ -38,9 +38,9 @@ def register_form():
 
 def register_check(username, password):
 
-    if username is "":
+    if not username:
         return(page_view("invalid", reason="Empty Username Field!!!"))
-    if password is "":
+    if not password:
         return(page_view("invalid", reason="Empty Password Field!!!"))
         
     sql_db = SQLDatabase('user1.db')
@@ -97,14 +97,6 @@ def login_check(username, password):
     # By default assume good creds
     login = True
 
-    # if database.search_table("users", "username", username) == None: # Incorrect Username
-    #     err_str = "Incorrect Username!!!"
-    #     login = False
-
-    # # Hash magic on password here & add salt
-    # if database.search_table("users", "password", password) == None: # Incorrect pwd
-    #     err_str = "Incorrect Password"
-    #     login = False
     sql_db = SQLDatabase('user1.db')
     # sql_db.execute("SELECT * FROM Users"))
     # pirnt(sql_db.cur.fetchall())
@@ -114,28 +106,18 @@ def login_check(username, password):
     # salt = str(random.randint(0, 1023)) + username
     # getting the salt of this username
     salt = sql_db.get_salt(username)
-    # print(salt)
-    # combine the salt with password
-    salt_w_password = salt + password
-    # hash pwd
-    hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-    # print(hashed_password)
-
+    if salt is None:
+        return page_view("invalid", reason="no salt in db")
     
+    # combine the salt with password and hash password
+    salt_w_password = salt + password
+    hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
 
+    # Check the hashed password with the sql database
     if sql_db.check_credentials(username, hashed_password) == False:
         err_str = "Incorrect username or password"
         login = False
     
-    
-    # if username != "admin": # Wrong Username
-    #     err_str = "Incorrect Username"
-    #     login = False
-    
-    # if password != "password": # Wrong password
-    #     err_str = "Incorrect Password"
-    #     login = False
-        
     if login: 
         friendlist = sql_db.get_user()
         print(friendlist)
@@ -185,16 +167,20 @@ def mess_form():
     return page_view("message_send")
 
 def send_mess(receiver, message):
-    # ecrypt mess here and then store it in the database
+    # pass the public key through
     return page_view("send_result", name=receiver)
 
 #-----------------------------------------------------------------------------
 # See incoming message
 #-----------------------------------------------------------------------------
-def incoming():
+def incoming(user):
     # get list of message here
-
-    return page_view("incoming")
+    sql_db = SQLDatabase('user1.db')
+    message_list = sql_db.get_user_cipertexts(user)
+    print(message_list)
+    # print(senders)
+    # return page_view("incoming", m_list=messages, s_list=senders)
+    return page_view("incoming", m_list=message_list)
 
 
 #-----------------------------------------------------------------------------

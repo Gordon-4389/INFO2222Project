@@ -6,30 +6,15 @@ Register with a username and password
 </br>
     Password: <input name="password" type="password" />
 </br>
-    <input type="hidden" id="PublicKey" name="PublicKey" value="temporarystring" />
+    <input type="hidden" id="PublicKey" name="PublicKey" value="Error in public key generation" />
     <input value="Register" type="submit"/>
-    <script>
-        let keyPair = await window.crypto.subtle.generateKey(
-            {
-            name: "RSA-OAEP",
-            modulusLength: 2048,
-            publicExponent: new Uint8Array([1, 0, 1]),
-            hash: "SHA-256"
-            },
-            true,
-            ["encrypt", "decrypt"]
-        );
 
-        const publicKey = keyPair.publicKey;
-        console.log(publicKey)
-        await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+    <script src="/js/key_manage.js">
+        let publicKey = exportPublicKey(keyPair)
+        let privateKey = exportPrivateKey(keyPair)
         document.forms["register"].PublicKey.value = publicKey;
-        document.register.submit();
+        console.log(publicKey)
     </script>
-
-<script type="text/javascript" src="js/key_manage.js"></script>
-<input value="Register" type="submit"/>
-<input type = "hidden" name="publickey" value="hjsahjdjsa"/>
 </form>
 </p>
 </center>

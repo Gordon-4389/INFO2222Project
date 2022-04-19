@@ -1,55 +1,11 @@
-// const crypto = require("crypto");
-
-// // // The `generateKeyPairSync` method accepts two arguments:
-// // // 1. The type ok keys we want, which in this case is "rsa"
-// // // 2. An object with the properties of the key
-// var keypair = require('keypair');
-
-// var pair = keypair();
-// var Key = {
-//   public_key : pair.public,
-//   private_key : pair.private
-// }
-
-// fs = require('fs');
-// fs.writeFile('public.txt', Key.public_key, function (err) {
-//     if (err) 
-//         return console.log(err);
-//     // console.log('Wrote Hello World in file helloworld.txt, just check it');
-// });
-// var pub = Key.publicKey;
-
-// let keyPair = await window.crypto.subtle.generateKey(
-//     {
-//       name: "RSA-OAEP",
-//       modulusLength: 4096,
-//       publicExponent: new Uint8Array([1, 0, 1]),
-//       hash: "SHA-256"
-//     },
-//     true,
-//     ["encrypt", "decrypt"]
-// );
-// let keyPair = window.crypto.subtle.generateKey(
-//   {
-//     name: "RSA-OAEP",
-//     modulusLength: 4096,
-//     publicExponent: new Uint8Array([1, 0, 1]),
-//     hash: "SHA-256"
-//   },
-//   true,
-//   ["encrypt", "decrypt"]
-// );
-// const Key =
-// {
-//   public_key : keyPair.publicKey,
-//   private_key : keyPair.privateKey
-// };
-
-// const car = {type:"Fiat", model:"500", color:"white"};
-// const publicKey = keyPair.publicKey;
-// await crypto.subtle.exportKey("jwk", keyPair.publicKey);
-// const privateKey = keyPair.privateKey;
-// await crypto.subtle.exportKey("jwk", keyPair.privateKey);
+function str2ab(str) {
+  const buf = new ArrayBuffer(str.length);
+  const bufView = new Uint8Array(buf);
+  for (let i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
 }
@@ -59,7 +15,8 @@ async function exportPrivateKey(key) {
     key
   );
   const exportedAsString = ab2str(exported);
-  console.log(exportedAsString)
+  // console.log(exportedAsString)
+  return exportedAsString
   // const exportedAsBase64 = window.btoa(exportedAsString);
   // const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`;
 
@@ -74,7 +31,8 @@ async function exportPublicKey(key) {
     key
   );
   const exportedAsString = ab2str(exported);
-  console.log(exportedAsString)
+  // console.log(exportedAsString)
+  return exportedAsString
   // const exportedAsBase64 = window.btoa(exportedAsString);
   // const pemExported = `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`;
 

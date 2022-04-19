@@ -116,9 +116,8 @@ def get_register_controller():
 def post_register():
     username = request.forms.get('username')
     password = request.forms.get('password')
-    # email = request.forms.get('email')
     public_key = request.forms.get('PublicKey')
-    print(public_key)
+    # print(public_key)
     
     return model.register_check(username, password)
 # ------------------------------------------------------------------------------
@@ -135,9 +134,14 @@ def post_message():
 
 # ------------------------------------------------------------------------------
 
-@get('/incoming_mess')
+# @get('/incoming_mess/<username>')
+# def get_incoming_page(username):
+#     return static_file(model.incoming(username), root='templates/')
+
+@get('/incoming')
 def get_incoming_page():
-    return model.incoming()
+    user = "admin"
+    return model.incoming(user)
 
 # ------------------------------------------------------------------------------
 @get('/about')
