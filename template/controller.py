@@ -7,9 +7,6 @@
 from bottle import route, get, post, error, request, static_file
 
 import model
-import json
-# import register
-# import key_manage.js
 
 #-----------------------------------------------------------------------------
 # Static file paths
@@ -120,16 +117,7 @@ def post_register():
     username = request.forms.get('username')
     password = request.forms.get('password')
     email = request.forms.get('email')
-    # output = request.get_json()
-    # print(output)
-    # result = json.loads(output) #this converts the json output to a python dictionary
-    # print(result) # Printing the new dictionary
-    # print(type(result))#this shows the json converted as a python dictionary
-    with open('public.txt') as f:
-        lines = f.readlines()
-        public_key = lines[1]
-    # print(lines)
-    return model.register_check(username, password, public_key)
+    return model.register_check(username, password)
 # ------------------------------------------------------------------------------
 @get('/send')
 def get_sendmess_page():

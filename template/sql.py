@@ -48,9 +48,7 @@ class SQLDatabase():
             Id INT,
             username TEXT,
             password TEXT,
-            admin INTEGER DEFAULT 0,
             salt TEXT
-            friends TEXT
             public_key TEXT
         )""")
 
@@ -65,22 +63,23 @@ class SQLDatabase():
         # self.commit()
 
         # Add our admin user
-        self.add_user('admin', admin_password, '0000', "ko", admin=1)
+        self.add_user('admin', admin_password, '0000', "ko")
+        self.commit()
 
     #-----------------------------------------------------------------------------
     # User handling
     #-----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, salt, public_key_str, admin=0):
+    def add_user(self, username, password, salt, public_key_str):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin}, '{salt}', '{public_key}')
+                VALUES('{username}', '{password}', '{salt}', '{public_key}')
             """
 
-        sql_cmd = sql_cmd.format(id=0, username=username, password=password, admin=admin, salt=salt,  public_key=public_key_str)
+        sql_cmd = sql_cmd.format(username=username, password=password, salt=salt,  public_key=public_key_str)
         # print(public_key_str)
-        self.execute(sql_cmd)
+        self.cur.execute(sql_cmd)
         self.commit()
         return True
 
@@ -145,10 +144,10 @@ class SQLDatabase():
             """
         
         sql_query = sql_query.format(username=username)
-        # print(username)
+        print(username)
         self.cur.execute(sql_query)
         try:
-            # print(self.cur.fetchone())
+            print(self.cur.fetchone())
             s = self.cur.fetchone()[0]
             # print(s)
         except:

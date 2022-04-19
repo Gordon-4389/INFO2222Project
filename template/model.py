@@ -10,6 +10,7 @@ import random
 # from no_sql_db import database
 from sql import SQLDatabase
 import hashlib
+import json
 # RSA encryption
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
@@ -36,7 +37,7 @@ def index():
 def register_form():
     return page_view("register")
 
-def register_check(username, password, public_key):
+def register_check(username, password):
     sql_db = SQLDatabase('user1.db')
 
     # Random Salt Generation and shuffle it twice
@@ -47,22 +48,35 @@ def register_check(username, password, public_key):
     salt_w_password = rand_salt + password
     # hash password
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
-
-    # # Key Generation
-    # private_key = RSA.generate(2048, Random.new().read)
-    # public_key = private_key.public_key()
+    
+    # Key Generation
+    private_key = RSA.generate(2048, Random.new().read)
+    public_key = private_key.public_key()
 
     # Add user into database
-    # pub_key_db = convert_pub_key_to_str(public_key)
+    pub_key_db = convert_pub_key_to_str(public_key)
     # print(pub_key_db)
-    sql_db.add_user(username, hashed_password, rand_salt, public_key)
+
+    sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
     sql_db.commit()
     # print(hashed_password)
     # print(tre)
-
+    # private_string = convert_pub_key_to_str(private_key)
     # TODO: Private key handling here, or maybe output it
+    pem_prefix = '-----BEGIN PRIVATE KEY-----\n'
+    pem_suffix = '\n-----END PRIVATE KEY-----'
 
-
+    # Export PEM format key to multi-line string format
+    to_convert = private_key.exportKey('PEM').decode('ASCII')
+    # Remove prefixes & suffixes
+    to_convert = to_convert.removeprefix(pem_prefix).removesuffix(pem_suffix)
+    # Remove newline characters
+    # converted_private_key = to_convert.replace('\n','') 
+    file_name = 'info.json'
+    
+    with open(file_name, 'w') as file_object:  #open the file in write mode
+        json.dump(to_convert, file_object)
+    
     return page_view("valid", name=username)
 
 #-----------------------------------------------------------------------------
@@ -103,7 +117,6 @@ def login_check(username, password):
     #     login = False
     sql_db = SQLDatabase('user1.db')
 
-    # salt = str(random.randint(0, 1023)) + username
     # getting the salt of this username
     salt = sql_db.get_salt(username)
     if salt == None:

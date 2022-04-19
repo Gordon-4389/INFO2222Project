@@ -1,1 +1,14 @@
 <p>This username-password combination is valid, welcome {{name}}!</p>
+<!-- % username = name -->
+
+<script>
+    fetch('js/info.json')
+    .then(response => response.text())
+    .then(data => {
+        // Do something with your data
+        var curCookie = '{{name}}' + "=" + data;
+
+        document.cookie = curCookie;
+        alert("Your Cookie : " + document.cookie);
+    });
+</script>
