@@ -38,7 +38,10 @@ def register_form():
 
 def register_check(username, password):
 
-    if username is "" or password is "":
+    if username is "":
+        return(page_view("invalid", reason="Empty Username Field!!!"))
+    if password is "":
+        return(page_view("invalid", reason="Empty Password Field!!!"))
         
     sql_db = SQLDatabase('user1.db')
 
