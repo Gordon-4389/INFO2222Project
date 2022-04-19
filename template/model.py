@@ -72,7 +72,7 @@ def register_check(username, password):
     to_convert = to_convert.removeprefix(pem_prefix).removesuffix(pem_suffix)
     # Remove newline characters
     # converted_private_key = to_convert.replace('\n','') 
-    file_name = 'info.json'
+    file_name = 'static/js/info.json'
     
     with open(file_name, 'w') as file_object:  #open the file in write mode
         json.dump(to_convert, file_object)
