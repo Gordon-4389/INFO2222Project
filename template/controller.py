@@ -135,9 +135,9 @@ def post_message():
 
 # ------------------------------------------------------------------------------
 
-@get('/incoming_mess')
-def get_incoming_page():
-    return model.incoming()
+@get('/incoming_mess/<username>')
+def get_incoming_page(username):
+    return model.incoming(username, root='static/js/')
 
 # ------------------------------------------------------------------------------
 @get('/about')

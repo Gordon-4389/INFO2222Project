@@ -108,6 +108,7 @@ window.crypto.subtle.generateKey(
   // exportButton.addEventListener("click", () => {
   var pub = exportPublicKey(keyPair.publicKey);
   var private = exportPrivateKey(keyPair.privateKey)
+  
   // });
 });
 
