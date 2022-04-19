@@ -45,7 +45,6 @@ class SQLDatabase():
 
         # Create the users table
         self.execute("""CREATE TABLE Users(
-            Id INT,
             username TEXT,
             password TEXT,
             salt TEXT,
@@ -55,12 +54,12 @@ class SQLDatabase():
         self.commit()
 
         # Message Logs (encrypted)
-        # self.execute("""CREATE TABLE Encrypted(
-        #     sender TEXT,
-        #     receiver TEXT,
-        #     ciphermessages TEXT 
-        # )""")
-        # self.commit()
+        self.execute("""CREATE TABLE Encrypted(
+            sender TEXT,
+            receiver TEXT,
+            ciphermessages TEXT 
+        )""")
+        self.commit()
 
         # Add our admin user
         self.add_user('admin', admin_password, '0000', "ko")
@@ -144,16 +143,16 @@ class SQLDatabase():
             """
         
         sql_query = sql_query.format(username=username)
-        print(username)
+        # print(username)
         self.cur.execute(sql_query)
         try:
-            print(self.cur.fetchone())
+            # print(self.cur.fetchone()[0])
             s = self.cur.fetchone()[0]
-            # print(s)
         except:
             return None
         # print(s[0])
         # return curs.fetchone()
+        # print(s)
         return s
 
 
@@ -176,7 +175,33 @@ class SQLDatabase():
             i+=1
         
         return return_list 
-     #-----------------------------------------------------------------------------
+
+    #-----------------------------------------------------------------------------
+    # get username public key to encrypt
+    def get_publickey(self, username):
+        sql_query = """
+                SELECT publickey
+                FROM Users
+                WHERE username = '{username}'
+            """
+
+        sql_query = sql_query.format(username=username)
+
+        self.cur.execute(sql_query)
+        try:
+            pub = self.cur.fetchone()[0]
+        except:
+            return None
+        return pub
+    #-----------------------------------------------------------------------------
+    # Check login credentials (check password database match with username)
+    def add_mess(self, message):
+        sql_cmd = """
+                INSERT INTO Encrypted
+                VALUES('{username}', '{password}', '{salt}', '{public_key}')
+            """
+
+    #-----------------------------------------------------------------------------
     # Check login credentials (check password database match with username)
     def check_credentials(self, username, password):
         sql_query = """
@@ -190,7 +215,9 @@ class SQLDatabase():
         
         self.cur.execute(sql_query)
         to_compare = self.cur.fetchone()
-
+        # print(to_compare)
+        # print(password)
+        
         if to_compare == None:
             return False
         elif to_compare[0] == username and to_compare[1] == password:
@@ -203,3 +230,16 @@ class SQLDatabase():
         #     return True
         # else:
         #     return False
+     # Get ciphertexts
+    def get_user_cipertexts(user):
+        sql_query = """
+                SELECT ciphermessages
+                FROM Encrypted
+                WHERE receiver = '{username}'
+            """
+        sql_query = sql_query.format(username=user)
+
+        self.cur.execute(sql_query)
+        sender_message_list = self.cur.fetchall()
+        print(sender_message_list)
+        return sender_message_list

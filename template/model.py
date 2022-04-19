@@ -122,6 +122,7 @@ def login_check(username, password):
 
     # getting the salt of this username
     salt = sql_db.get_salt(username)
+    print(salt)
     if salt == None:
         return page_view("invalid", reason="error")
     # print(salt)
@@ -196,15 +197,29 @@ def mess_form():
 
 def send_mess(receiver, message):
     # ecrypt mess here and then store it in the database
-    return page_view("send_result", name=receiver)
+    sql_db = SQLDatabase('user1.db')
+    pub_k_string = sql_db.get_publickey(receiver)
+    pub_k = read_public_key_as_PEM(pub_k_string)
+
+    if pub_k is None:
+        return page_view("invalid", reason="no such receiver")
+    
+
+    # encryptor = PKCS1_OAEP.new(pub_k)
+    # encrypted_mess = encryptor.encrypt(message)
+    # print(encrypted_mess)
+
+    # sql_db.add_mess(encrypted_mess)
+    return page_view("send_result", name=receiver, pubkey=pub_k)
 
 #-----------------------------------------------------------------------------
 # See incoming message
 #-----------------------------------------------------------------------------
-def incoming():
+def incoming(username):
     # get list of message here
-
-    return page_view("incoming")
+    sql_db = SQLDatabase("user1.db")
+    mess_list = sql_db.get_user_cipertexts(username)
+    return page_view("incoming", list=mess_list)
 
 
 #-----------------------------------------------------------------------------
