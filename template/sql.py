@@ -160,12 +160,7 @@ class SQLDatabase():
         #     return True
         # else:
         #     return False
-<<<<<<< Updated upstream
 
-=======
-    
-    
->>>>>>> Stashed changes
     #-----------------------------------------------------------------------------
     # Get ciphertexts
     def get_user_cipertexts(self, user):

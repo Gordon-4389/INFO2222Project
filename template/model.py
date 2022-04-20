@@ -37,12 +37,8 @@ def index():
 def register_form():
     return page_view("register")
 
-<<<<<<< Updated upstream
-def register_check(username, password):
-=======
 def register_check(username, password, public_key):
     sql_db = SQLDatabase('user1.db')
->>>>>>> Stashed changes
 
     if not username:
         return(page_view("invalid", reason="Empty Username Field!!!"))
@@ -172,10 +168,6 @@ def mess_form(username):
     return page_view("message_send")
 
 def send_mess(receiver, message):
-<<<<<<< Updated upstream
-    # pass the public key through
-    return page_view("send_result", name=receiver)
-=======
     # ecrypt mess here and then store it in the database
     sql_db = SQLDatabase('user1.db')
     sql.add_mess(receiver, message)
@@ -192,7 +184,6 @@ def send_mess(receiver, message):
 
     # sql_db.add_mess(encrypted_mess)
     return page_view("send_result", name=receiver, pubkey=pub_k)
->>>>>>> Stashed changes
 
 #-----------------------------------------------------------------------------
 # See incoming message

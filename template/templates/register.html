@@ -1,25 +1,16 @@
 Register with a username and password
 </p>
 <p>
-<form action="/register" id= "register" method="post">
+<form action="/register" id= "register" method="post" onsubmit="createAndExportKey()">
     Username: <input name="username" type="text" id="name"/>
 </br>
     Password: <input name="password" type="password" />
 </br>
-    <input type="hidden" id="PublicKey" name="PublicKey" value="Error in public key generation" />
+    <input type="hidden" id="PublicKey" name="PublicKey" value="Error!!!" />
     <input value="Register" type="submit"/>
-
-    <script src="/js/key_manage.js">
-        let publicKey = exportPublicKey(keyPair)
-        let privateKey = exportPrivateKey(keyPair)
-        document.forms["register"].PublicKey.value = publicKey;
-        console.log(publicKey)
-    </script>
 </form>
 </p>
 </center>
-<<<<<<< Updated upstream
-=======
 <!-- Key generation on submit -->
 <script>
     function createAndExportKey(){
@@ -56,4 +47,3 @@ Register with a username and password
 </script>
 
 
->>>>>>> Stashed changes
