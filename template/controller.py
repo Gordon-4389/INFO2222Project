@@ -123,14 +123,20 @@ def post_register():
     return model.register_check(username, password)
 =======
     return model.register_check(username, password, public_key)
+<<<<<<< Updated upstream
     
 >>>>>>> Stashed changes
+=======
+
+
+>>>>>>> Stashed changes
 # ------------------------------------------------------------------------------
-@get('/send')
-def get_sendmess_page():
-    return model.mess_form()
+@get('/send<username>')
+def get_sendmess_page(username):
+    return model.mess_form(username)
 
 # send message
+<<<<<<< Updated upstream
 @post('/send')
 def post_message():
     receiver = request.forms.get('receiver')
@@ -147,6 +153,20 @@ def post_message():
 def get_incoming_page():
     user = "admin"
     return model.incoming(user)
+=======
+@post('/send/<username>')
+def post_message(username):
+    # receiver = request.forms.get('receiver')
+    # message = request.forms.get('message')
+    encrypted = request.forms.get('encrypted')
+    return model.send_mess(username, encrypted)
+
+# ------------------------------------------------------------------------------
+
+@get('/incoming_mess/<username>')
+def get_incoming_page(username):
+    return model.incoming(username)
+>>>>>>> Stashed changes
 
 # ------------------------------------------------------------------------------
 @get('/about')

@@ -59,7 +59,6 @@ class SQLDatabase():
 
         # Message Logs (encrypted)
         self.execute("""CREATE TABLE Encrypted(
-            sender TEXT,
             receiver TEXT,
             ciphermessages TEXT 
         )""")
@@ -161,7 +160,12 @@ class SQLDatabase():
         #     return True
         # else:
         #     return False
+<<<<<<< Updated upstream
 
+=======
+    
+    
+>>>>>>> Stashed changes
     #-----------------------------------------------------------------------------
     # Get ciphertexts
     def get_user_cipertexts(self, user):

@@ -1,1 +1,38 @@
+<<<<<<< Updated upstream
 <p>You have sent message to {{name}} successfully!!</p>
+=======
+<p>You have sent message to {{name}} successfully!!</p>
+<!-- <script>
+    function getMessageEncoding() {
+        const messageBox = document.getElementById("mess");
+        let message = messageBox.value;
+        let enc = new TextEncoder();
+        return enc.encode(message);
+    }
+
+    function encryptMessage(publicKey) {
+
+        let encoded = getMessageEncoding();
+        return window.crypto.subtle.encrypt(
+            {
+            name: "RSA-OAEP"
+            },
+            publicKey,
+            encoded
+        );
+    encryptMessage(pubkey)
+    .then(response => response.text())
+    .then(data => {
+        console.log(data)
+        var db = openDatabase('user1.db', '1.0', 'Test DB', 2 * 1024 * 1024);
+        db.transaction(function (tx) {   
+        tx.executeSql('INSERT INTO Encrypted (receiver, ciphermessages) VALUES (?, ?'), ['{{name}}', data]; 
+        tx.commit();
+        
+        });
+        
+        });
+
+    }
+</script> -->
+>>>>>>> Stashed changes

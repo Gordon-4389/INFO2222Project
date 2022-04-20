@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <style>
     table, th, td {
         border: 1px solid;
@@ -13,25 +14,30 @@
     }
 </style>
 
+=======
+<link rel="stylesheet" type="text/css" href="/css/temp.css">
+>>>>>>> Stashed changes
 <p>All of your incoming encrypted messages are below, please select a message to decrypt it:</p>
 
 <!-- % messages = m_list -->
 <!-- % senders = s_list -->
+<<<<<<< Updated upstream
+=======
+% user  = Gordon
+>>>>>>> Stashed changes
 % m_list  = ["dasadasdaddsadas","is","the","mesasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasage","list"]
-% s_list  = ["thiadsddsadsaas","is","the","sender","lst"]
 % if not m_list:
 <p>You have no messages!</p>
 % else:
 <table>
     <thead>
       <tr>
-        <th>Sender</th><th>Message</th>
+        <th>Message</th>
       </tr>
     </thead>
     <tbody>
         % for n in range(len(m_list)):
         <tr>
-            <td>{{s_list[n]}}</td>
             <td id= "message_{{n}}" onclick="decrypt({{n}})" > {{m_list[n]}} </td>
         </tr>
         % end
@@ -39,32 +45,50 @@
   </table>
 % end
 <script>
+    // Storing the messages to decrypt
     const messages =  {{!m_list}};
     function decrypt(n){  
         const to_decrypt = messages[n];
         const m_id = "message_".concat(n.toString());
         // alert(m_id)
-        alert(document.getElementById(m_id));
-        alert(messages[n]);
+        // alert(document.getElementById(m_id));
+        // alert(messages[n]);
+
         };
+    
+    // Importing the private key of a user from cookies
+    function importPrivateKey(jwk) {
+        return window.crypto.subtle.importKey("jwk", jwk, {
+            name: "ECDSA", 
+            namedCurve: "P-384"
+        },
+        true,
+        ["decrypt"]
+        );
+    }
+    function getWebKey(username) {
+        // let name = username + "=";
+        let decoded_cookies = decodeURIComponent(document.cookie);
+        let cookie_array = decoded_cookies.split(';');
+        for (cookie in cookie_array){
+            crumb = cookie.split('=');
+            // Check for username matching
+            if (crumb[0]==username) {
+                return
+            }
+        }
+    }
 </script>
 
-<script>
-    const jwkEcKey = {
-    "crv": "P-384",
-    "d": "wouCtU7Nw4E8_7n5C1-xBjB4xqSb_liZhYMsy8MGgxUny6Q8NCoH9xSiviwLFfK_",
-    "ext": true,
-    "key_ops": ["sign"],
-    "kty": "EC",
-    "x": "SzrRXmyI8VWFJg1dPUNbFcc9jZvjZEfH7ulKI1UkXAltd7RGWrcfFxqyGPcwu6AQ",
-    "y": "hHUag3OvDzEr0uUQND4PXHQTXP5IDGdYhJhL-WLKjnGjQAw0rNGy5V29-aV-yseW"
-    };
-</script>
+
 
 <script>
     importPrivateKeyAndDecrypt();
 
-    const privateKey = jwkEcKey
+    // Retrieve cookies
+    
+    const j_web_key = json.parse()
+    const privateKey = importPrivateKey()
     
     async function importPrivateKeyAndDecrypt() {
     
@@ -80,19 +104,6 @@
         }
     }
     
-    async function importPrivateKey(pkcs8Pem) {     
-        return await window.crypto.subtle.importKey(
-            "pkcs8",
-            getPkcs8Der(pkcs8Pem),
-            {
-                name: "RSA-OAEP",
-                hash: "SHA-256",
-            },
-            true,
-            ["decrypt"]
-        );
-    }
-    
     async function decryptRSA(key, ciphertext) {
         let decrypted = await window.crypto.subtle.decrypt(
             {
@@ -102,14 +113,6 @@
             ciphertext
         );
         return new TextDecoder().decode(decrypted);
-    }
-    
-    function getPkcs8Der(pkcs8Pem){
-        const pemHeader = "-----BEGIN PRIVATE KEY-----";
-        const pemFooter = "-----END PRIVATE KEY-----";
-        var pemContents = pkcs8Pem.substring(pemHeader.length, pkcs8Pem.length - pemFooter.length);
-        var binaryDerString = window.atob(pemContents);
-        return str2ab(binaryDerString); 
     }
     
     //

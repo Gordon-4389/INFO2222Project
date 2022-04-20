@@ -10,6 +10,7 @@ import random
 # from no_sql_db import database
 from sql import SQLDatabase
 import hashlib
+import json
 # RSA encryption
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
@@ -36,14 +37,20 @@ def index():
 def register_form():
     return page_view("register")
 
+<<<<<<< Updated upstream
 def register_check(username, password):
+=======
+def register_check(username, password, public_key):
+    sql_db = SQLDatabase('user1.db')
+>>>>>>> Stashed changes
 
     if not username:
         return(page_view("invalid", reason="Empty Username Field!!!"))
     if not password:
         return(page_view("invalid", reason="Empty Password Field!!!"))
-        
-    sql_db = SQLDatabase('user1.db')
+    if public_key == "Error!!!":
+        return(page_view("invalid", reason="Public Key not generated!!!"))
+
 
     # Random Salt Generation and shuffle it twice
     salt = str(random.randint(0000, 9999)) + username
@@ -121,11 +128,8 @@ def login_check(username, password):
     
     if login: 
         friendlist = sql_db.get_user()
-        print(friendlist)
-        # a = ','.join(friendlist)
-        # print(a)
-
-        
+        # print(friendlist)
+                
         return page_view("login_valid", name=username, list=friendlist)
     else:
         return page_view("invalid", reason=err_str)
@@ -164,12 +168,31 @@ def read_public_key_as_PEM(public_key_string):
 #-----------------------------------------------------------------------------
 # Send message
 #-----------------------------------------------------------------------------
-def mess_form():
+def mess_form(username):
     return page_view("message_send")
 
 def send_mess(receiver, message):
+<<<<<<< Updated upstream
     # pass the public key through
     return page_view("send_result", name=receiver)
+=======
+    # ecrypt mess here and then store it in the database
+    sql_db = SQLDatabase('user1.db')
+    sql.add_mess(receiver, message)
+    pub_k_string = sql_db.get_publickey(receiver)
+    pub_k = read_public_key_as_PEM(pub_k_string)
+
+    if pub_k is None:
+        return page_view("invalid", reason="no such receiver")
+    
+
+    # encryptor = PKCS1_OAEP.new(pub_k)
+    # encrypted_mess = encryptor.encrypt(message)
+    # print(encrypted_mess)
+
+    # sql_db.add_mess(encrypted_mess)
+    return page_view("send_result", name=receiver, pubkey=pub_k)
+>>>>>>> Stashed changes
 
 #-----------------------------------------------------------------------------
 # See incoming message
