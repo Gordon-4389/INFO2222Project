@@ -53,6 +53,7 @@
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
 }
+<<<<<<< Updated upstream
 async function exportPrivateKey(key) {
   const exported = await window.crypto.subtle.exportKey(
     "pkcs8",
@@ -62,12 +63,27 @@ async function exportPrivateKey(key) {
   console.log(exportedAsString)
   // const exportedAsBase64 = window.btoa(exportedAsString);
   // const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`;
+=======
+>>>>>>> Stashed changes
 
-  // const exportKeyOutput = document.querySelector(".exported-key");
-  // exportKeyOutput.textContent = pemExported;
-  // console.log(exportKeyOutput)
+// async function exportPrivateKey(key) {
+//   let to_return =  crypto.subtle.exportKey('jwk', key).then(key => {
+//     const private = JSON.stringify(key);
+//     return private
+//   });
+//   return to_return
+//  }
+
+
+// async function exportPublicKey(key) {
+//   let to_return = crypto.subtle.exportKey("spki",key).then(key => {
+//   const exportedAsString = String.fromCharCode.apply(null, new Uint8Array(key))
+//   return exportedAsString
+//   });
+//   return to_return
 }
 
+<<<<<<< Updated upstream
 async function exportPublicKey(key) {
   const exported = await window.crypto.subtle.exportKey(
     "spki",
@@ -111,8 +127,24 @@ window.crypto.subtle.generateKey(
   
   // });
 });
+=======
+// async function generateKey() {
+//   const algoritm = {
+//     name: "RSA-OAEP",
+//     modulusLength: 2048,
+//     publicExponent: new Uint8Array([1, 0, 1]),
+//     hash: "SHA-256"
+//   };
+//   const exportable = true;
+//   const usage = ["encrypt", "decrypt"];
+//   return await window.crypto.subtle.generateKey(algoritm, exportable, usage).then(key => {return key;});
+// }
+
+>>>>>>> Stashed changes
 
 
+const pub = exportPublicKey(keyPair.publicKey)
+const priv = exportPrivateKey(keyPair.privateKey)
 
 
 

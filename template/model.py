@@ -36,7 +36,7 @@ def index():
 def register_form():
     return page_view("register")
 
-def register_check(username, password):
+def register_check(username, password, public_key):
 
     if username is "":
         return(page_view("invalid", reason="Empty Username Field!!!"))
@@ -55,14 +55,13 @@ def register_check(username, password):
     hashed_password = hashlib.sha256(salt_w_password.encode()).hexdigest()
 
     # Key Generation
-    private_key = RSA.generate(2048, Random.new().read)
-    public_key = private_key.public_key()
+    # private_key = RSA.generate(2048, Random.new().read)
+    # public_key = private_key.public_key()
+    # pub_key_db = convert_pub_key_to_str(public_key)
 
     # Add user into database
-    pub_key_db = convert_pub_key_to_str(public_key)
-    # print(pub_key_db)
     # print(username, hashed_password, rand_salt, pub_key_db)
-    sql_db.add_user(username, hashed_password, rand_salt, pub_key_db)
+    sql_db.add_user(username, hashed_password, rand_salt, public_key)
     sql_db.commit()
     # print(hashed_password)
     # print(tre)
@@ -179,6 +178,10 @@ def read_public_key_as_PEM(public_key_string):
     to_import = '-----BEGIN PUBLIC KEY-----\n{}\n-----END PUBLIC KEY-----'.format(public_key_string)
     imported_key = RSA.import_key(to_import) # May/may not be needed
     return imported_key
+
+def getPublicKey(User):
+    sql_db = SQLDatabase('user1.db')
+    return sql_db.getPublicKey(User)
 
     
 #-----------------------------------------------------------------------------

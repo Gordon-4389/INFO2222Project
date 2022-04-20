@@ -230,9 +230,24 @@ class SQLDatabase():
         #     return True
         # else:
         #     return False
-     # Get ciphertexts
-    def get_user_cipertexts(user):
-        sql_query = """
+    
+    #-----------------------------------------------------------------------------
+    # Get public key of a user
+    def getPublicKey(self, user):
+        public_key_query = """
+                SELECT publicKey
+                FROM Users
+                WHERE username = '{username}'
+            """
+        self.cur.execute(public_key_query)
+        public_key = self.cur.fetchone()
+        print(public_key)
+        return public_key
+    
+    #-----------------------------------------------------------------------------
+    # Get ciphertexts
+    def get_user_cipertexts(self, user):
+        ciphertexts = """
                 SELECT ciphermessages
                 FROM Encrypted
                 WHERE receiver = '{username}'

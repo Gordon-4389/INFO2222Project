@@ -116,21 +116,23 @@ def get_register_controller():
 def post_register():
     username = request.forms.get('username')
     password = request.forms.get('password')
-    # email = request.forms.get('email')
-    public_key = request.forms.get('PublicKey')
-    print(public_key)
-    
-    return model.register_check(username, password)
+    public_key = request.forms.get('PublicKey')    
+    # print(public_key)
+    return model.register_check(username, password, public_key)
 # ------------------------------------------------------------------------------
 @get('/send')
 def get_sendmess_page():
     return model.mess_form()
 
 # send message
-@post('/send')
-def post_message():
-    receiver = request.forms.get('receiver')
+# @post('/send')
+@post('/send/<receiver>')
+def post_message(receiver):
+    # public_key = model.getPublicKey(receiver)
+
+    # receiver = request.forms.get('receiver')
     message = request.forms.get('message')
+    encrypted = request.forms.get('encrypted')
     return model.send_mess(receiver, message)
 
 # ------------------------------------------------------------------------------
