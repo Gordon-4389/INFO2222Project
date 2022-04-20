@@ -118,8 +118,13 @@ def post_register():
     password = request.forms.get('password')
     public_key = request.forms.get('PublicKey')
     # print(public_key)
+<<<<<<< Updated upstream
     
     return model.register_check(username, password)
+=======
+    return model.register_check(username, password, public_key)
+    
+>>>>>>> Stashed changes
 # ------------------------------------------------------------------------------
 @get('/send')
 def get_sendmess_page():

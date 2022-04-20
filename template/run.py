@@ -49,12 +49,20 @@ def run_server():
         run_server
         Runs a bottle server
     '''
+<<<<<<< Updated upstream
     # run(host=host, port=port, debug=debug)
     key_path = './info2222.go.key'
     cert_path = './info2222.go.crt'
     config_path = './info2222.go.ext'
     print(key_path)
     run(host=host, port=port, debug=debug)
+=======
+    run(host=host, port=port, debug=debug)
+    # file_path = os.path.basename(os.path.dirname(__file__))
+    key_path =  './info2222.go.key'
+    cert_path =  './info2222.go.crt'
+    config_path =  './info2222.go.ext'
+>>>>>>> Stashed changes
     # run(host=host, port=port, debug=debug, server='gunicorn', keyfile=key_path, certfile=cert_path, config=config_path)
 
 #-----------------------------------------------------------------------------

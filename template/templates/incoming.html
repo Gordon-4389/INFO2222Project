@@ -49,3 +49,84 @@
         };
 </script>
 
+<script>
+    const jwkEcKey = {
+    "crv": "P-384",
+    "d": "wouCtU7Nw4E8_7n5C1-xBjB4xqSb_liZhYMsy8MGgxUny6Q8NCoH9xSiviwLFfK_",
+    "ext": true,
+    "key_ops": ["sign"],
+    "kty": "EC",
+    "x": "SzrRXmyI8VWFJg1dPUNbFcc9jZvjZEfH7ulKI1UkXAltd7RGWrcfFxqyGPcwu6AQ",
+    "y": "hHUag3OvDzEr0uUQND4PXHQTXP5IDGdYhJhL-WLKjnGjQAw0rNGy5V29-aV-yseW"
+    };
+</script>
+
+<script>
+    importPrivateKeyAndDecrypt();
+
+    const privateKey = jwkEcKey
+    
+    async function importPrivateKeyAndDecrypt() {
+    
+        // A ciphertext produced with the first code
+        const ciphertextB64 = "q/g0YQ+CbFwCb9QxAeKk/X8vjUUKpBGCVe6OvFoBlTfRF24BQlWpLFhxVQv+Gn29CzAXfSJjU+C8taYXQ4wofyOaRx0etkATDbmIV1gVdxNnqVKTx2RSj1L3uACZ3aWYIGRjtaBMBNAW81mPEjxEWCvRW3uI/rOn3LAc4N05CkofOnsIpaafgcEjhZoTxp1Dpkm328bwRJ3g1Dn+vQk6JBiAXSiF7GHvMvnD6q+CQiO1dcv0lrrXlibE8/P2LHWpqQ9g5xWWUHl70q2WB+IxLgX9OkqX8XQ1GHjP5EaQFfo1HerBpa+Uf5DaienI/XT4n64DWM1S7t0dbhFDskc9HQ==";
+            
+        try {
+            const priv = await importPrivateKey(privateKey);
+            const decrypted = await decryptRSA(priv, str2ab(window.atob(ciphertextB64)));
+            console.log(decrypted);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+    
+    async function importPrivateKey(pkcs8Pem) {     
+        return await window.crypto.subtle.importKey(
+            "pkcs8",
+            getPkcs8Der(pkcs8Pem),
+            {
+                name: "RSA-OAEP",
+                hash: "SHA-256",
+            },
+            true,
+            ["decrypt"]
+        );
+    }
+    
+    async function decryptRSA(key, ciphertext) {
+        let decrypted = await window.crypto.subtle.decrypt(
+            {
+                name: "RSA-OAEP"
+            },
+            key,
+            ciphertext
+        );
+        return new TextDecoder().decode(decrypted);
+    }
+    
+    function getPkcs8Der(pkcs8Pem){
+        const pemHeader = "-----BEGIN PRIVATE KEY-----";
+        const pemFooter = "-----END PRIVATE KEY-----";
+        var pemContents = pkcs8Pem.substring(pemHeader.length, pkcs8Pem.length - pemFooter.length);
+        var binaryDerString = window.atob(pemContents);
+        return str2ab(binaryDerString); 
+    }
+    
+    //
+    // Helper
+    //
+        
+    // https://stackoverflow.com/a/11058858
+    function str2ab(str) {
+        const buf = new ArrayBuffer(str.length);
+        const bufView = new Uint8Array(buf);
+        for (let i = 0, strLen = str.length; i < strLen; i++) {
+            bufView[i] = str.charCodeAt(i);
+        }
+        return buf;
+    }
+        
+    function ab2str(buf) {
+        return String.fromCharCode.apply(null, new Uint8Array(buf));
+    }
+</script>

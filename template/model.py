@@ -49,6 +49,7 @@ def register_check(username, password):
     salt = str(random.randint(0000, 9999)) + username
     rand_salt = ''.join(random.sample(salt,len(salt)))
     rand_salt = ''.join(random.sample(rand_salt,len(rand_salt)))
+
     # combine the salt with password
     salt_w_password = rand_salt + password
     # hash password
