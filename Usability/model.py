@@ -111,3 +111,15 @@ def handle_errors(error):
     error_type = error.status_line
     error_msg = error.body
     return page_view("error", error_type=error_type, error_msg=error_msg)
+
+
+#-----------------------------------------------------------------------------
+# Forum Page
+#-----------------------------------------------------------------------------
+def forum():
+    '''
+        about
+        Returns the view for the forum page
+    '''
+    sql_db = sql.SQLDatabase('usability_db.db')
+    return page_view("forum", posts=sql_db.get_posts())

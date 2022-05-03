@@ -43,6 +43,10 @@ class SQLDatabase():
         # Clear the database if needed
         self.execute("DROP TABLE IF EXISTS Users")
         self.commit()
+        self.execute("DROP TABLE IF EXISTS Encrypted")
+        self.commit()
+        self.execute("DROP TABLE IF EXISTS Posts")
+        self.commit()
 
         # Create the users table
         self.execute("""CREATE TABLE Users(
@@ -62,19 +66,28 @@ class SQLDatabase():
         )""")
         self.commit()
 
+        # Add our admin user
+        self.add_user('admin', admin_password, '0000', "ko")
+        self.commit()
+
+
         # Simple text-based database forum for posts
         self.execute("""Create TABLE Posts(
             Id INT,
             Poster TEXT,
             Message TEXT,
             Tags TEXT,
-            Replies TEXT
+            Replies TEXT,
+            NumReplies INT
         )""")
+        # print("Table Posts created sucessfully")
         self.commit()
 
-        # Add our admin user
-        self.add_user('admin', admin_password, '0000', "ko")
+        # self.insert_new_post("admin", "Testing posting functionality, \% is there a\_problem? \n If not then welcome! Let\'s \"have\" a blast!!!\n", "administration, troubleshooting")
+        self.insert_new_post('admin', 'Testing posting functionality, is there a problem? \n If not then welcome! Lets "have" a blast!!!\n', 'administration, troubleshooting')
         self.commit()
+
+
 
     #-----------------------------------------------------------------------------
     # User handling
@@ -271,33 +284,112 @@ class SQLDatabase():
         return sender_message_list
 
     # ------------------------------------------------------------------------------------
-    # Forum database query
+    # Forum database queries
     # ------------------------------------------------------------------------------------
     # Get all posts
-    def get_all_posts(self):
+    def get_posts(self):
         sql_query = """
                 SELECT *
                 FROM Posts
         """
         self.cur.execute(sql_query)
-
         post_list = self.cur.fetchall()
         
         return post_list
 
     # Insert new posts
     def insert_new_post(self, poster, message, tags):
-        post_to_input = """
-                SELECT *
-                VALUES ({id}, '{Poster}', '{Message}', '{Tags}', '{Replies}')
-        """
-        num_posts = len(self.get_all_posts())
-        replies = {
-            "Replier": [],
-            "Replies": []
-        }
-        r  = json.dumps(replies)
-        print(r)
+        # Escape handling
+        esc_poster = self.to_raw(poster)
+        esc_message = self.to_raw(message)
+        esc_tags = self.to_raw(tags)
+        # print(esc_message)
+        # esc_message = repr(message)
+        # print(esc_message)
 
-        post_query = post_to_input.format(id=num_posts, Poster=poster, Message=message, Tags=tags, Replies=r)
-        self.cur.execute(post_query)
+        post_to_input = """
+                INSERT INTO Posts (Id, Poster, Message, Tags, NumReplies)
+                VALUES ({id}, '{Poster}', '{Message}', '{Tags}', {NumReplies})
+        """
+
+        num_posts = len(self.get_posts())
+        # print(num_posts)
+        # print(len(self.get_posts()))
+
+        # Replies will be in the form: "replier_1 - reply_1, replier_2 - reply_2"
+        post_to_input = post_to_input.format(id=num_posts, Poster=esc_poster, Message=esc_message, Tags=esc_tags, NumReplies=0)
+        self.cur.execute(post_to_input)
+        self.commit()
+        # Return the post id
+        return num_posts
+
+    # Insert new reply
+    def update_post_reply(self, id, replier, reply):
+        # Escape handling
+        esc_replier = self.to_raw(replier)
+        esc_reply = self.to_raw(reply)
+
+        replies_of_post_query =  """
+                SELECT Replies, NumReplies
+                FROM Posts
+                Where id={Id}
+        """
+        replies_of_post_query = replies_of_post_query.format(Id=id)
+
+        # Update contents of replies and num reply
+        self.cur.execute(replies_of_post_query)
+        result = self.cur.fetchall()
+        # print("results of replies: ",result)
+        if result[0][0] == None:
+            replies_to_update = '{0} - {1}'.format(esc_replier, esc_reply)
+        else:
+            reply_list = result[0][0].split(',')
+            reply_list.append('{0} - {1}'.format(esc_replier, esc_reply))
+            replies_to_update = ','.join(reply_list)
+            # print(reply_list)
+            
+        # print("replies: ",replies_to_update, type(replies_to_update))
+        num_replies = result[0][1] + 1
+        # print("new num replies: ", num_replies, type(num_replies))
+
+        # Update Post in db
+        post_to_update_query = """
+                UPDATE Posts
+                SET Replies = '{Replies}', NumReplies = {NumReplies}
+                WHERE id = {Id}
+        """
+        post_to_update_query = post_to_update_query.format(Replies = replies_to_update, NumReplies = num_replies, Id = id)
+        self.cur.execute(post_to_update_query)
+        self.commit()
+
+        return replies_to_update
+
+
+    # Escape Character Handling:
+    def to_raw(self, text):
+        # to_ret = text.encode(encoding='UTF-8')
+        # print(to_ret)
+        to_ret = repr(text)[1:-1]
+        # print(to_ret)
+        # to_ret = to_ret.replace("\\", "\\\\") # Backslash
+        to_ret = to_ret.replace("'", "''") # Single quote
+        to_ret = to_ret.replace('"', '""') # Double Quotes
+        # to_ret = to_ret.replace('\n', '\\n') # New line
+        # to_ret = to_ret.replace('\r', '\\r') # Carriage Return
+        # to_ret = to_ret.replace('\t', '\\t') # Tab
+        to_ret = to_ret.replace('_', '\_') # Underscore value
+        to_ret = to_ret.replace("%", "\%") # Special character
+        # print(to_ret)
+        # print(repr(text))
+        return to_ret
+        
+
+# sql_db = SQLDatabase("usability_db.db")
+# new_post = sql_db.insert_new_post("Gordon", "Another test", "Administration")
+# # print(new_post)
+# reply_1 = sql_db.update_post_reply(new_post, 'Gordon', 'Does it work?')
+# print(reply_1)
+# reply_2 = sql_db.update_post_reply(new_post, "Admin", "It's working!!!")
+# print(reply_2)
+# posts = sql_db.get_posts()
+# print(posts)

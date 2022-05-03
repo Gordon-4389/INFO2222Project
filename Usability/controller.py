@@ -129,3 +129,14 @@ def post_debug(cmd):
 @error(404)
 def error(error): 
     return model.handle_errors(error)
+
+# Forum Shennanigans with the controller
+@post('/forum')
+def get_forum():
+    '''
+        get_forum
+        
+        Serves the forum page
+    '''
+    return model.forum()
+#-----------------------------------------------------------------------------

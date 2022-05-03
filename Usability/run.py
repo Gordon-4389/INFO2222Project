@@ -16,6 +16,7 @@
 import os
 import sys
 from bottle import run
+from bottle import Bottle
 
 #-----------------------------------------------------------------------------
 # You may eventually wish to put these in their own directories and then load 
@@ -65,11 +66,22 @@ def manage_db():
         manage_db
         Starts up and re-initialises an SQL databse for the server
     '''
-    database_args = "./usability_db.db" # Currently runs in RAM, might want to change this to a file if you use it
-    sql_db = sql.SQLDatabase(database_args=database_args)
-    sql_db.insert_new_post("Admin", "Testing posting functionality, is there a problem", "administration, troubleshooting")
+    database_args = "usability_db.db" # Currently runs in RAM, might want to change this to a file if you use it
+    sql_db = sql.SQLDatabase(database_args)
+    sql_db.database_setup()
+    sql_db.commit()
+    # sql_db.insert_new_post("Admin", "Testing posting functionality, is there a problem", "administration, troubleshooting")
 
-    posts = sql_db.get_all_posts()
+    # posts = sql_db.get_all_posts()
+    
+    new_post = sql_db.insert_new_post("Gordon", "Another test", "Administration, Testing, Usability")
+    # print(new_post)
+    reply_1 = sql_db.update_post_reply(new_post, 'Gordon', 'Does it work?')
+    # print(reply_1)
+    reply_2 = sql_db.update_post_reply(new_post, "Admin", "It's working!!!")
+    # print(reply_2)
+    posts = sql_db.get_posts()
+    print(posts)
 
     return
 
@@ -94,11 +106,11 @@ def run_commands(args):
 
         :: args :: Command line arguments passed to this function
     '''
-    commands = args[:]
+    commands = args[1:]
 
     # Default command
     if len(commands) == 0:
-        commands = [default_command]
+        commands = ['manage_db', default_command]
 
     for command in commands:
         if command in command_list:
