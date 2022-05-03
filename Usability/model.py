@@ -121,5 +121,6 @@ def forum():
         about
         Returns the view for the forum page
     '''
-    sql_db = sql.SQLDatabase('usability_db.db')
-    return page_view("forum", posts=sql_db.get_posts())
+    sql_db = sql.SQLDatabase("usability_db.db")
+    forum_posts = sql_db.get_posts()
+    return page_view("forum", posts=forum_posts)

@@ -130,11 +130,13 @@ def post_debug(cmd):
 def error(error): 
     return model.handle_errors(error)
 
+
+#-----------------------------------------------------------------------------
 # Forum Shennanigans with the controller
 @post('/forum')
-def get_forum():
+def forum():
     '''
-        get_forum
+        forum
         
         Serves the forum page
     '''
