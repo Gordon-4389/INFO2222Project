@@ -7,6 +7,7 @@
 '''
 import view
 import random
+import sql
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -123,4 +124,6 @@ def forum():
     '''
     sql_db = sql.SQLDatabase("usability_db.db")
     forum_posts = sql_db.get_posts()
+    # print(forum_posts)
     return page_view("forum", posts=forum_posts)
+    # return page_view("forum")

@@ -74,7 +74,7 @@ def manage_db():
 
     # posts = sql_db.get_all_posts()
     
-    new_post = sql_db.insert_new_post("Gordon", "Another test", "Administration, Testing, Usability")
+    new_post = sql_db.insert_new_post("Gordon", "Another test", "This is another testing being conducted. \n\n Regards, \n Gordon", "Administration, Testing, Usability")
     # print(new_post)
     reply_1 = sql_db.update_post_reply(new_post, 'Gordon', 'Does it work?')
     # print(reply_1)

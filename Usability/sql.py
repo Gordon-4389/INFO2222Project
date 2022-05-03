@@ -75,6 +75,7 @@ class SQLDatabase():
         self.execute("""Create TABLE Posts(
             Id INT,
             Poster TEXT,
+            Title TEXT,
             Message TEXT,
             Tags TEXT,
             Replies TEXT,
@@ -83,8 +84,8 @@ class SQLDatabase():
         # print("Table Posts created sucessfully")
         self.commit()
 
-        # self.insert_new_post("admin", "Testing posting functionality, \% is there a\_problem? \n If not then welcome! Let\'s \"have\" a blast!!!\n", "administration, troubleshooting")
-        self.insert_new_post('admin', 'Testing posting functionality, is there a problem? \n If not then welcome! Lets "have" a blast!!!\n', 'administration, troubleshooting')
+        # self.insert_new_post("admin", 'Test No. 1', "Testing posting functionality, \% is there a\_problem? \n If not then welcome! Let\'s \"have\" a blast!!!\n", "administration, troubleshooting")
+        self.insert_new_post('admin', 'Test No. 1', 'Testing posting functionality, is there a problem? \n If not then welcome! Lets "have" a blast!!!\n', 'administration, troubleshooting')
         self.commit()
 
 
@@ -298,9 +299,10 @@ class SQLDatabase():
         return post_list
 
     # Insert new posts
-    def insert_new_post(self, poster, message, tags):
+    def insert_new_post(self, poster, title, message, tags):
         # Escape handling
         esc_poster = self.to_raw(poster)
+        esc_title = self.to_raw(title)
         esc_message = self.to_raw(message)
         esc_tags = self.to_raw(tags)
         # print(esc_message)
@@ -308,8 +310,8 @@ class SQLDatabase():
         # print(esc_message)
 
         post_to_input = """
-                INSERT INTO Posts (Id, Poster, Message, Tags, NumReplies)
-                VALUES ({id}, '{Poster}', '{Message}', '{Tags}', {NumReplies})
+                INSERT INTO Posts (Id, Poster, Title, Message, Tags, NumReplies)
+                VALUES ({id}, '{Poster}', '{Title}', '{Message}', '{Tags}', {NumReplies})
         """
 
         num_posts = len(self.get_posts())
@@ -317,7 +319,7 @@ class SQLDatabase():
         # print(len(self.get_posts()))
 
         # Replies will be in the form: "replier_1 - reply_1, replier_2 - reply_2"
-        post_to_input = post_to_input.format(id=num_posts, Poster=esc_poster, Message=esc_message, Tags=esc_tags, NumReplies=0)
+        post_to_input = post_to_input.format(id=num_posts, Poster=esc_poster, Title=esc_title, Message=esc_message, Tags=esc_tags, NumReplies=0)
         self.cur.execute(post_to_input)
         self.commit()
         # Return the post id

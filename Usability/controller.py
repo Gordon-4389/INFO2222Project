@@ -118,6 +118,18 @@ def get_about():
     return model.about()
 #-----------------------------------------------------------------------------
 
+#-----------------------------------------------------------------------------
+# Forum Shennanigans with the controller
+@get('/forum')
+def forum():
+    '''
+        forum
+        
+        Serves the forum page
+    '''
+    return model.forum()
+#-----------------------------------------------------------------------------
+
 # Help with debugging
 @post('/debug/<cmd:path>')
 def post_debug(cmd):
@@ -131,14 +143,4 @@ def error(error):
     return model.handle_errors(error)
 
 
-#-----------------------------------------------------------------------------
-# Forum Shennanigans with the controller
-@post('/forum')
-def forum():
-    '''
-        forum
-        
-        Serves the forum page
-    '''
-    return model.forum()
-#-----------------------------------------------------------------------------
+
