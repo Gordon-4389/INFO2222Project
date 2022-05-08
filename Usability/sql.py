@@ -381,8 +381,6 @@ class SQLDatabase():
         # to_ret = to_ret.replace('\t', '\\t') # Tab
         to_ret = to_ret.replace('_', '\_') # Underscore value
         to_ret = to_ret.replace("%", "\%") # Special character
-        # print(to_ret)
-        # print(repr(text))
         return to_ret
         
 

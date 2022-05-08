@@ -107,7 +107,15 @@ def post_login():
 
 
 #-----------------------------------------------------------------------------
-
+@get('/question')
+def get_question_page():
+    '''
+        get_question
+        
+        Serves the q&a page
+    '''
+    return model.question_page()
+#-----------------------------------------------------------------------------
 @get('/about')
 def get_about():
     '''
@@ -117,6 +125,25 @@ def get_about():
     '''
     return model.about()
 #-----------------------------------------------------------------------------
+@get('/user')
+def get_user_home():
+    '''
+        
+        Serves the user home page
+    '''
+    return model.user()
+#-----------------------------------------------------------------------------
+# Help with debugging
+@post('/debug/<cmd:path>')
+def post_debug(cmd):
+    return model.debug(cmd)
+
+#-----------------------------------------------------------------------------
+
+# 404 errors, use the same trick for other types of errors
+@error(404)
+def error(error): 
+    return model.handle_errors(error)
 
 #-----------------------------------------------------------------------------
 # Forum Shennanigans with the controller
@@ -130,17 +157,14 @@ def forum():
     return model.forum()
 #-----------------------------------------------------------------------------
 
-# Help with debugging
-@post('/debug/<cmd:path>')
-def post_debug(cmd):
-    return model.debug(cmd)
-
 #-----------------------------------------------------------------------------
-
-# 404 errors, use the same trick for other types of errors
-@error(404)
-def error(error): 
-    return model.handle_errors(error)
-
-
-
+# Resources Section with the controller
+@get('/resources')
+def resources():
+    '''
+        Resources
+        
+        Serves the resources page
+    '''
+    return model.resources()
+#-----------------------------------------------------------------------------

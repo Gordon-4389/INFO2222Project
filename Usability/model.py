@@ -60,9 +60,56 @@ def login_check(username, password):
         login = False
         
     if login: 
-        return page_view("valid", name=username)
+        friend_ = ["Jayson", "Claudia", "Mya"]
+        return page_view("valid", name=username, list=friend_, header="new_header")
     else:
         return page_view("invalid", reason=err_str)
+
+#-----------------------------------------------------------------------------
+# Home
+#-----------------------------------------------------------------------------
+
+def user():
+    '''
+       home
+    '''
+    friend_ = ["Jayson", "Claudia", "Mya"]
+    return page_view("valid", list=friend_, header="new_header")
+
+
+#-----------------------------------------------------------------------------
+# Q&A
+#-----------------------------------------------------------------------------
+
+def question_page():
+    '''
+       question
+    '''
+    return page_view("question", header="new_header")
+
+#-----------------------------------------------------------------------------
+# Forum Page
+#-----------------------------------------------------------------------------
+def forum():
+    '''
+        about
+        Returns the view for the forum page
+    '''
+    sql_db = sql.SQLDatabase("usability_db.db")
+    forum_posts = sql_db.get_posts()
+    # print(forum_posts)
+    return page_view("forum", header="new_header", posts=forum_posts)
+
+#-----------------------------------------------------------------------------
+# Resources Page
+#-----------------------------------------------------------------------------
+def resources():
+    '''
+        about
+        Returns the view for the resources page
+    '''
+    
+    return page_view("resources", header="new_header")
 
 #-----------------------------------------------------------------------------
 # About
@@ -112,18 +159,3 @@ def handle_errors(error):
     error_type = error.status_line
     error_msg = error.body
     return page_view("error", error_type=error_type, error_msg=error_msg)
-
-
-#-----------------------------------------------------------------------------
-# Forum Page
-#-----------------------------------------------------------------------------
-def forum():
-    '''
-        about
-        Returns the view for the forum page
-    '''
-    sql_db = sql.SQLDatabase("usability_db.db")
-    forum_posts = sql_db.get_posts()
-    # print(forum_posts)
-    return page_view("forum", posts=forum_posts)
-    # return page_view("forum")

@@ -81,7 +81,7 @@ def manage_db():
     reply_2 = sql_db.update_post_reply(new_post, "Admin", "It's working!!!")
     # print(reply_2)
     posts = sql_db.get_posts()
-    print(posts)
+    # print(posts)
 
     return
 

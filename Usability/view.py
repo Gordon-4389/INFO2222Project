@@ -3,10 +3,8 @@
 # You can find a fuller explanation for this file in the README file
 #-----------------------------------------------------------------------------
 
-import string, os
+import string
 from bottle import SimpleTemplate 
-
-
 
 class View():
     '''
@@ -19,7 +17,7 @@ class View():
         header keyword argument when calling the function from model
     '''
     def __init__(self, 
-        template_path=os.path.dirname(__file__)+"/templates/",  # Path to template files
+        template_path="templates/",  # Path to template files
         template_extension=".html",  # Extension of templates, self can be overridden
         **kwargs): # Used to pass any global format arguments
         self.template_path = template_path
@@ -104,7 +102,6 @@ class View():
             :: template :: The template to use
             :: kwargs :: A dictionary of key value pairs to pass to the template
         '''
-
         # template = string.Template(template)
         # template = template.safe_substitute(**kwargs)
         template = SimpleTemplate(template)
